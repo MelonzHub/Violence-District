@@ -2,15 +2,19 @@
 -- VIOLENCE DISTRICT SCRIPT HUB
 -- ================================
 
--- Load WindUI
+print("Script loading...")
+
 local WindUI = loadstring(game:HttpGet(
     "https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"
 ))()
 
--- Load ESP Module (dari GitHub kamu)
+print("WindUI loaded!")
+
 local ESP = loadstring(game:HttpGet(
     "https://raw.githubusercontent.com/MelonzHub/Violence-District/refs/heads/main/esp.lua"
 ))()
+
+print("ESP loaded!")
 
 -- ================================
 -- WINDOW
