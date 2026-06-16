@@ -1,0 +1,4342 @@
+getgenv()['MELONZ_PREMIUM'] = true
+if not game['IsLoaded'](game) then
+	game['Loaded']['Wait'](game['Loaded'])
+end
+while not game['GetService'](game, 'Players')['LocalPlayer'] do
+	task['wait']()
+end
+while not workspace['CurrentCamera'] do
+	task['wait']()
+end
+local Uc = (cloneref or clonereference or function(Ub)
+	return Ub
+end)
+local jj, na, Ym, ia, hq, lk, oi, Fm, Kl, zf, Bm, Oq = Uc(game['GetService'](game, 'RunService')), Uc(game['GetService'](game, 'UserInputService')), Uc(game['GetService'](game, 'Lighting')), Uc(game['GetService'](game, 'Players')), game['GetService'](game, 'Stats'), Uc(game['GetService'](game, 'VirtualInputManager')), Uc(game['GetService'](game, 'CoreGui')), Uc(game['GetService'](game, 'GuiService')), Uc(game['GetService'](game, 'ReplicatedStorage')), Uc(game['GetService'](game, 'PathfindingService')), game['GetService'](game, 'ProximityPromptService'), Uc(game['GetService'](game, 'HttpService'))
+local He = ia['LocalPlayer']
+local xq = He['WaitForChild'](He, 'PlayerGui')
+local function Ln()
+	local xa, Lm = pcall(function()
+		return loadstring(game['HttpGet'](game, 'https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua'))()
+	end)
+	return xa and Lm or nil
+end
+local Vc = Ln()
+if not (Vc) then
+	pcall(function()
+		game['GetService'](game, 'StarterGui')['SetCore'](game['GetService'](game, 'StarterGui'), 'SendNotification', {
+			Title = 'Error',
+			Text = 'Gagal memuat UI.'
+		})
+	end);
+	warn'WindUI gagal dimuat'
+else
+	print'WindUI berhasil dimuat'
+end
+local Gl = {}
+Gl['service'] = 'Melonz';
+Gl['identifier'] = '1041888';
+Gl['provider'] = 'Mixed'
+local gg, vl, Oe, nc, cn, uf = {
+	Killer = Color3['fromRGB'](255, 93, 108),
+	Survivor = Color3['fromRGB'](0, 255, 34),
+	Generator = Color3['fromRGB'](200, 100, 0),
+	Gate = Color3['fromRGB'](255, 255, 255),
+	Pallet = Color3['fromRGB'](53, 189, 166),
+	Hook = Color3['fromRGB'](252, 116, 116)
+}, {
+	Abysswalker = 'ABYSSWALKER',
+	Hidden = 'HIDDEN',
+	Killer = 'THE KILLER',
+	Masked = 'PALA AYAM',
+	Stalker = 'STALKER',
+	Veil = 'VEIL',
+	Slasher = 'SLASHER'
+}, {
+	Abysswalker = Color3['fromRGB'](110, 20, 255),
+	Hidden = Color3['fromRGB'](170, 170, 170),
+	Killer = Color3['fromRGB'](255, 40, 40),
+	Masked = Color3['fromRGB'](255, 90, 20),
+	Stalker = Color3['fromRGB'](255, 0, 140),
+	Veil = Color3['fromRGB'](0, 140, 255),
+	Slasher = Color3['fromRGB'](180, 0, 255)
+}, {
+	Generators = {},
+	Pallets = {},
+	Hooks = {},
+	Gates = {}
+}, {
+	Gears = 0,
+	Screws = 0,
+	Level = 0
+}, {
+	Generator = false,
+	Hook = false,
+	Pallet = false,
+	Gate = false
+};
+getgenv()['MoonwalkZigzagSpeed'] = 11;
+getgenv()['MoonwalkBoostPower'] = 1.0800000000000001;
+getgenv()['AutoFarmSpeed'] = 17
+local Ng, jo, n_ = false, 0, 0;
+getgenv()['MoonwalkEnabled'] = false
+local zk, Zk, Oc, bg, Ll, Bp, Mp, Ag, E, Ze = Enum['KeyCode']['R'], Vector3['new'], Vector2['new'], CFrame['new'], CFrame['Angles'], table['insert'], table['remove'], math['floor'], math['round'], string['format']
+local function cq()
+	local zm = workspace['FindFirstChild'](workspace, 'Map')
+	if not (not zm) then
+	else
+		return
+	end
+	nc['Generators'] = {};
+	nc['Pallets'] = {};
+	nc['Hooks'] = {};
+	nc['Gates'] = {}
+	local iq = zm['GetDescendants'](zm)
+	for Xi = 105, (# iq) + 104 do
+		local Ph = iq[(Xi - 104)]
+		local _l = Ph['Name']
+		if _l == 'Generator' then
+			Bp(nc['Generators'], Ph)
+		elseif _l == 'Hook' then
+			Bp(nc['Hooks'], Ph)
+		elseif not (_l == 'Gate') then
+			if _l == 'Pallet' or _l == 'Palletwrong' then
+				Bp(nc['Pallets'], Ph)
+			end
+		else
+			Bp(nc['Gates'], Ph)
+		end
+		if not ((Xi - 104) % 500 == 0) then
+		else
+			task['wait']()
+		end
+	end
+	if not (uf) then
+	else
+		uf['Generator'] = false;
+		uf['Hook'] = false;
+		uf['Pallet'] = false;
+		uf['Gate'] = false
+	end
+end
+task['spawn'](function()
+	local rk, lh = true, nil
+	while task['wait'](2) do
+		if not getgenv()['MELONZ_RUNNING'] then
+			if lh then
+				lh['Disconnect'](lh)
+			end
+			break
+		end
+		local fb = workspace['FindFirstChild'](workspace, 'Map')
+		local wo = fb and # fb['GetChildren'](fb) > 0
+		if not (wo and rk) then
+			if not (not wo and not rk) then
+			else
+				rk = true
+				if lh then
+					lh['Disconnect'](lh);
+					lh = nil
+				end
+				nc['Generators'] = {};
+				nc['Pallets'] = {};
+				nc['Hooks'] = {};
+				nc['Gates'] = {}
+				if ActiveGenerators then
+					table['clear'](ActiveGenerators)
+				end
+				if uf then
+					uf['Generator'] = false;
+					uf['Hook'] = false;
+					uf['Pallet'] = false;
+					uf['Gate'] = false
+				end
+			end
+		else
+			rk = false;
+			task['delay'](8, function()
+				if not (fb and # fb['GetChildren'](fb) > 0) then
+				else
+					cachedChar = nil;
+					cachedRoot = nil;
+					cq()
+					if lh then
+						lh['Disconnect'](lh)
+					end
+					lh = fb['DescendantAdded']['Connect'](fb['DescendantAdded'], function(Kp)
+						local fh = Kp['Name']
+						if fh == 'Generator' then
+							Bp(nc['Generators'], Kp)
+						elseif fh == 'Hook' then
+							Bp(nc['Hooks'], Kp)
+						elseif not (fh == 'Gate') then
+							if fh == 'Pallet' or fh == 'Palletwrong' then
+								Bp(nc['Pallets'], Kp)
+							end
+						else
+							Bp(nc['Gates'], Kp)
+						end
+					end)
+					local hr, ke = nc['Pallets'] and # nc['Pallets'] or 0, nc['Generators'] and # nc['Generators'] or 0;
+					Vc['Notify'](Vc, {
+						Title = 'Map Loaded',
+						Content = 'Menemukan ' .. hr .. ' Pallet & ' .. ke .. ' Gen. Radar Aktif!',
+						Icon = 'lucide:radar'
+					})
+				end
+			end)
+		end
+	end
+end)
+local mm, Co, Jn, _d, _b, r_, x, lo_, Kg, wi, ml, vd, Oo, nd, vg, Wn, Po, ed, Nh, Tn, zj, fj, Ee, mo = false, false, false, false, false, false, false, false, false, 100, getgenv()['AimRadius'] or 60, 30, nil, 0, workspace['CurrentCamera'], 0, false, false, 10, false, {}, false, false, false;
+getgenv()['MELONZ_RUNNING'] = true;
+getgenv()['AimbotSmoothness'] = 8;
+getgenv()['AimStrictness'] = 1.3;
+getgenv()['ParryDelayOffset'] = 0
+local dd, Ba = false, 120
+local xb
+local vn;
+getgenv()['MELONZ_CONNECTIONS'] = getgenv()['MELONZ_CONNECTIONS'] or {}
+for kg, Nj in ipairs(getgenv()['MELONZ_CONNECTIONS']) do
+	pcall(function()
+		jj['UnbindFromRenderStep'](jj, 'SmoothFOV')
+	end)
+	if Nj['Disconnect'] then
+		Nj['Disconnect'](Nj)
+	end
+end
+table['clear'](getgenv()['MELONZ_CONNECTIONS'])
+local eo, Wl, kf, ae, Be, Rd, Qo, Ha, jn, Dh = 'Perfect', false, false, false, nil, false, 15, false, 12, RaycastParams['new']();
+Dh['FilterType'] = Enum['RaycastFilterType']['Blacklist']
+local sk, cr, Kk, Fd, Gp, id, Hp, Jc, vf, En, hp, Nm, ac, Ce, Ye, xd, y, Kq, lg, vm = false, false, true, false, false, false, false, false, false, false, false, false, {}, 999, 0, nil, getgenv()['AimDistance'] or 80, Enum['KeyCode']['Q'], 0, {}
+local tb, Dm = pcall(function()
+	return Uc(game['GetService'](game, 'CoreGui'))
+end)
+local Fg = tb and Dm or xq
+local K = Fg['FindFirstChild'](Fg, 'Melonz_Indicator') or Instance['new']'ScreenGui';
+K['Name'] = 'Melonz_Indicator';
+K['IgnoreGuiInset'] = true;
+K['ResetOnSpawn'] = false;
+K['Parent'] = Fg
+if K['FindFirstChild'](K, 'FOVCircle') then
+	K['FOVCircle']['Destroy'](K['FOVCircle'])
+end
+xd = Instance['new']('Frame', K);
+xd['Name'] = 'FOVCircle';
+xd['Size'] = UDim2['new'](0, ml * 2, 0, ml * 2);
+xd['AnchorPoint'] = Oc(0.5, 0.5);
+xd['Position'] = UDim2['new'](0.5, 0, 0.5, 0);
+xd['BackgroundTransparency'] = 1;
+xd['Visible'] = lo_
+local Jp = Instance['new']('UICorner', xd);
+Jp['CornerRadius'] = UDim['new'](1, 0)
+local _h = Instance['new']('UIStroke', xd);
+_h['Color'] = Color3['new'](1, 1, 1);
+_h['Transparency'] = 0.5;
+_h['Thickness'] = 1.5
+local Ie, P, wc, Sj = Instance['new']'ScreenGui', Instance['new']'TextButton', Instance['new']'UICorner', Instance['new']'UIStroke';
+pcall(function()
+	Ie['Name'] = 'Melonz_MoonwalkUI';
+	Ie['Enabled'] = false;
+	Ie['Parent'] = (game['GetService'](game, 'CoreGui') or game['GetService'](game, 'Players')['LocalPlayer']['WaitForChild'](game['GetService'](game, 'Players')['LocalPlayer'], 'PlayerGui'));
+	Ie['ZIndexBehavior'] = Enum['ZIndexBehavior']['Sibling']
+end);
+P['Name'] = 'MoonwalkBtn';
+P['Parent'] = Ie;
+P['BackgroundColor3'] = Color3['fromRGB'](20, 20, 20);
+P['Position'] = UDim2['new'](1, - 95, 0.5, - 35);
+P['Size'] = UDim2['new'](0, 65, 0, 65);
+P['Font'] = Enum['Font']['GothamBold'];
+P['Text'] = 'MW: OFF';
+P['TextColor3'] = Color3['fromRGB'](255, 255, 255);
+P['TextSize'] = 14;
+P['Draggable'] = true;
+wc['CornerRadius'] = UDim['new'](0, 12);
+wc['Parent'] = P;
+Sj['Color'] = Color3['fromRGB'](100, 100, 100);
+Sj['Thickness'] = 2;
+Sj['Parent'] = P
+local function _p()
+	if not getgenv()['MELONZ_PREMIUM'] then
+		if not (Vc) then
+		else
+			Vc['Notify'](Vc, {
+				Title = 'VIP Required',
+				Content = 'Fitur ini hanya untuk member Premium!',
+				Icon = 'lucide:lock'
+			})
+		end
+		return
+	end
+	getgenv()['MoonwalkEnabled'] = not getgenv()['MoonwalkEnabled']
+	if getgenv()['MoonwalkEnabled'] then
+		P['Text'] = 'MW: ON';
+		P['TextColor3'] = Color3['fromRGB'](247, 107, 28);
+		Sj['Color'] = Color3['fromRGB'](247, 107, 28)
+	else
+		P['Text'] = 'MW: OFF';
+		P['TextColor3'] = Color3['fromRGB'](255, 255, 255);
+		Sj['Color'] = Color3['fromRGB'](100, 100, 100)
+		local X = game['Players']['LocalPlayer']['Character']
+		local wk = X and X['FindFirstChildOfClass'](X, 'Humanoid')
+		if not (wk) then
+		else
+			wk['AutoRotate'] = true
+		end
+	end
+end
+P['MouseButton1Click']['Connect'](P['MouseButton1Click'], _p);
+game['GetService'](game, 'UserInputService')['InputBegan']['Connect'](game['GetService'](game, 'UserInputService')['InputBegan'], function(Na, oa)
+	if not (oa) then
+	else
+		return
+	end
+	if Na['KeyCode'] == zk then
+		_p()
+	end
+end)
+if Fg['FindFirstChild'](Fg, 'VeilCrosshair') then
+	Fg['VeilCrosshair']['Destroy'](Fg['VeilCrosshair'])
+end
+getgenv()['CrosshairGui'] = Instance['new']'ScreenGui';
+getgenv()['CrosshairGui']['Name'] = 'VeilCrosshair';
+getgenv()['CrosshairGui']['IgnoreGuiInset'] = true;
+getgenv()['CrosshairGui']['ResetOnSpawn'] = false;
+getgenv()['CrosshairGui']['Enabled'] = false;
+getgenv()['CrosshairGui']['Parent'] = Fg
+local Mi = Instance['new']('Frame', getgenv()['CrosshairGui']);
+Mi['Name'] = 'DotMarker';
+Mi['Size'] = UDim2['new'](0, 4, 0, 4);
+Mi['AnchorPoint'] = Oc(0.5, 0.5);
+Mi['Position'] = UDim2['new'](0.5, 0, 0.5, 0);
+Mi['BackgroundColor3'] = Color3['fromRGB'](255, 0, 0);
+Mi['BorderSizePixel'] = 0
+local Il = Instance['new']('UICorner', Mi);
+Il['CornerRadius'] = UDim['new'](1, 0)
+local cl = Instance['new']('UIStroke', Mi);
+cl['Color'] = Color3['new'](0, 0, 0);
+cl['Thickness'] = 1.1000000000000001
+local ij = Fg['FindFirstChild'](Fg, 'Melonz_ParryRing')
+if not (ij) then
+else
+	ij['Destroy'](ij)
+end
+local bp = Fg['FindFirstChild'](Fg, 'Melonz_ParryRing') or Instance['new']'CylinderHandleAdornment';
+bp['Name'] = 'Melonz_ParryRing';
+bp['Height'] = 0.02;
+bp['Color3'] = Color3['fromRGB'](170, 40, 255);
+bp['Transparency'] = 0.69999999999999996;
+bp['AlwaysOnTop'] = true;
+bp['ZIndex'] = 10;
+bp['CFrame'] = bg(0, - 3.2000000000000002, 0) * Ll(math['rad'](90), 0, 0);
+bp['Parent'] = Fg
+local function ge(_r, Kd)
+	if typeof(_r) ~= 'Instance' then
+		return nil
+	end
+	local Si = _r['GetAttribute'](_r, Kd)
+	if not (Si ~= nil) then
+	else
+		return Si
+	end
+	local to = _r['FindFirstChild'](_r, Kd)
+	if not (to) then
+	else
+		if not (to['IsA'](to, 'ValueBase')) then
+		else
+			return to['Value']
+		end
+	end
+	return nil
+end
+local function Xl(Ra, oh, rl, hm)
+	local mj = Instance['new']'BillboardGui';
+	mj['Name'] = 'TagESP';
+	mj['AlwaysOnTop'] = true;
+	mj['Size'] = rl or UDim2['new'](0, 150, 0, 40);
+	mj['LightInfluence'] = 0;
+	mj['ZIndexBehavior'] = Enum['ZIndexBehavior']['Sibling']
+	local Lb = Instance['new']'TextLabel';
+	Lb['Name'] = 'Label';
+	Lb['Size'] = UDim2['new'](1, 0, 1, 0);
+	Lb['BackgroundTransparency'] = 1;
+	Lb['Text'] = Ra;
+	Lb['TextColor3'] = oh;
+	Lb['Font'] = Enum['Font']['GothamBold'];
+	Lb['TextSize'] = hm or 12;
+	Lb['TextWrapped'] = true;
+	Lb['RichText'] = true
+	local jd = Instance['new']'UIStroke';
+	jd['Thickness'] = 1.2;
+	jd['Color'] = Color3['new'](0, 0, 0);
+	jd['Transparency'] = 0.20000000000000001;
+	jd['Parent'] = Lb;
+	Lb['Parent'] = mj
+	return mj
+end
+local yk, Qi = 0, 0
+local function dj()
+	jj['RenderStepped']['Connect'](jj['RenderStepped'], function(yl)
+		if not (getgenv()['MoonwalkEnabled']) then
+			local dg = He['Character']
+			local ep = dg and dg['FindFirstChild'](dg, 'Humanoid')
+			if not (ep and not ep['AutoRotate']) then
+			else
+				ep['AutoRotate'] = true
+			end
+		else
+			local tg = He['Character']
+			local Eq, Kc = tg and tg['FindFirstChild'](tg, 'HumanoidRootPart'), tg and tg['FindFirstChild'](tg, 'Humanoid')
+			if not (Eq and Kc and Kc['Health'] > 0) then
+			else
+				Kc['AutoRotate'] = false
+				local Ld = workspace['CurrentCamera']
+				local yj = Ld['CFrame']['LookVector']
+				local No = math['deg'](math['atan2'](yj['X'], yj['Z']))
+				local Nk = No + 180
+				local Vd = (Nk - yk + 180) % 360 - 180;
+				yk = yk + (Vd * 0.28000000000000003 * math['clamp'](yl * 60, 0, 3))
+				local Uf, Ep = Kc['MoveDirection']['Magnitude'] > 0.10000000000000001, 0
+				if Uf then
+					local Md, gk = getgenv()['MoonwalkZigzagSpeed'] or 14, getgenv()['MoonwalkZigzagAmount'] or 52;
+					Ep = math['sin'](tick() * Md) * gk
+				end
+				Qi = Qi + (Ep - Qi) * 0.45000000000000001
+				local up = CFrame['Angles'](0, math['rad'](yk + Qi), 0);
+				Eq['CFrame'] = CFrame['new'](Eq['Position']) * up
+				if not (Uf) then
+				else
+					local Dc = getgenv()['MoonwalkBoostPower'] or 1.1499999999999999;
+					Eq['Velocity'] = Vector3['new'](Kc['MoveDirection']['X'] * (Kc['WalkSpeed'] * Dc), Eq['Velocity']['Y'], Kc['MoveDirection']['Z'] * (Kc['WalkSpeed'] * Dc))
+				end
+			end
+		end
+	end)
+end
+task['spawn'](dj)
+local Ef = xq['FindFirstChild'](xq, 'Melonz_ESP_UI')
+if not Ef then
+	Ef = Instance['new']'ScreenGui';
+	Ef['Name'] = 'Melonz_ESP_UI';
+	Ef['ResetOnSpawn'] = false;
+	Ef['IgnoreGuiInset'] = true;
+	Ef['Parent'] = xq
+end
+local Sl = workspace['CurrentCamera']['FindFirstChild'](workspace['CurrentCamera'], 'Melonz_ESP_3D')
+if not (not Sl) then
+else
+	Sl = Instance['new']'Folder';
+	Sl['Name'] = 'Melonz_ESP_3D';
+	Sl['Parent'] = workspace['CurrentCamera']
+end
+local am, Gd = false, nil
+local function Lg(zp)
+	local kp = ia['LocalPlayer']
+	if zp then
+		kp['CameraMode'] = Enum['CameraMode']['LockFirstPerson']
+		if not Gd then
+			Gd = jj['RenderStepped']['Connect'](jj['RenderStepped'], function()
+				local Io = kp['Character']
+				if not (Io) then
+				else
+					local rg = Io['FindFirstChild'](Io, 'Head')
+					if not (rg) then
+					else
+						rg['LocalTransparencyModifier'] = 1
+					end
+					for fk, sl in ipairs(Io['GetChildren'](Io)) do
+						if not (sl['IsA'](sl, 'Accessory')) then
+						else
+							local ne = sl['FindFirstChild'](sl, 'Handle')
+							if ne then
+								ne['LocalTransparencyModifier'] = 1
+							end
+						end
+					end
+					local gp, op, Ja = Io['FindFirstChild'](Io, 'HumanoidRootPart'), Io['FindFirstChild'](Io, 'Humanoid'), workspace['CurrentCamera']
+					if gp and op and Ja then
+						op['AutoRotate'] = false
+						local ve, pb = select(2, Ja['CFrame']['ToEulerAnglesYXZ'](Ja['CFrame'])), gp['Orientation']['Y']
+						local _o = math['deg'](ve)
+						if not (math['abs'](pb - _o) > 1) then
+						else
+							gp['CFrame'] = bg(gp['Position']) * Ll(0, ve, 0)
+						end
+					end
+				end
+			end)
+		end
+	else
+		kp['CameraMode'] = Enum['CameraMode']['Classic'];
+		kp['CameraMaxZoomDistance'] = 128
+		local lp = kp['Character']
+		local Fa = lp and lp['FindFirstChild'](lp, 'Humanoid')
+		if Fa then
+			Fa['AutoRotate'] = true
+		end
+		if Gd then
+			Gd['Disconnect'](Gd);
+			Gd = nil
+		end
+		local Ma = kp['Character']
+		if not (Ma) then
+		else
+			local ef = Ma['FindFirstChild'](Ma, 'Head')
+			if not (ef) then
+			else
+				ef['LocalTransparencyModifier'] = 0
+			end
+			for yh, B in ipairs(Ma['GetChildren'](Ma)) do
+				if not (B['IsA'](B, 'Accessory')) then
+				else
+					local qb = B['FindFirstChild'](B, 'Handle')
+					if not (qb) then
+					else
+						qb['LocalTransparencyModifier'] = 0
+					end
+				end
+			end
+		end
+	end
+end
+local function Ad(im, Pq)
+	local lq = im['FindFirstChild'](im, 'H')
+	if not (not lq) then
+	else
+		lq = Instance['new']'Highlight';
+		lq['Name'] = 'H';
+		lq['Adornee'] = im;
+		lq['FillTransparency'] = 0.80000000000000004;
+		lq['OutlineTransparency'] = 0.5;
+		lq['DepthMode'] = Enum['HighlightDepthMode']['AlwaysOnTop'];
+		lq['FillColor'] = Pq;
+		lq['OutlineColor'] = Pq;
+		lq['Parent'] = im
+		return
+	end
+	if not (lq['FillColor'] ~= Pq) then
+	else
+		lq['FillColor'] = Pq;
+		lq['OutlineColor'] = Pq
+	end
+	if not (not lq['Enabled']) then
+	else
+		lq['Enabled'] = true
+	end
+end
+local function Mk(ze)
+	if not (ze) then
+	else
+		local Lk = ze['FindFirstChild'](ze, 'H')
+		if not (Lk) then
+		else
+			Lk['Destroy'](Lk)
+		end
+	end
+end
+local db = {}
+local function nf(ma, wd)
+	local ab = ma['Character']
+	local Fo, Xd = ab and ab['FindFirstChild'](ab, 'HumanoidRootPart'), ab and ab['FindFirstChild'](ab, 'Humanoid')
+	if not Fo or not Xd or Xd['Health'] <= 0 then
+		RemovePlayerESP(ma);
+		db[ma['UserId']] = nil
+		return
+	end
+	local Hi = He['Character']
+	local xl = Hi and Hi['FindFirstChild'](Hi, 'HumanoidRootPart')
+	if not xl then
+		return
+	end
+	local gf, ba, zn, Bb = Ag((Fo['Position'] - xl['Position'])['Magnitude']), wd and gg['Killer'] or gg['Survivor'], '', ''
+	if wd then
+		local vh = ab['GetAttribute'](ab, 'CachedMask') or ab['GetAttribute'](ab, 'KillerType') or ab['GetAttribute'](ab, 'SelectedKiller') or ge(ab, 'SelectedKiller') or ge(ma, 'SelectedKiller') or ge(ab, 'Mask') or ge(ma, 'Mask') or ab['Name']
+		if vh then
+			ab['SetAttribute'](ab, 'CachedMask', vh);
+			zn = vl[vh] or 'KILLER';
+			ba = Oe[vh] or ba
+		else
+			zn = 'KILLER'
+		end
+	else
+		local function dn(mi)
+			return mi == true or (type(mi) == 'number' and mi > 0)
+		end
+		local td, ta, Jb = dn(ge(ab, 'IsHooked')) or dn(ge(ma, 'IsHooked')), dn(ge(ab, 'Carried')) or dn(ge(ab, 'IsCarried')) or dn(ge(ab, 'Grabbed')) or dn(ge(ma, 'Carried')), dn(ge(ab, 'Knocked')) or dn(ge(ab, 'IsKnocked'))
+		if td then
+			ba = Color3['fromRGB'](255, 75, 147);
+			zn = 'HOOKED'
+		elseif ta then
+			ba = Color3['fromRGB'](200, 75, 255);
+			zn = 'CARRIED'
+		elseif not (Jb) then
+			if not (Xd['Health'] < Xd['MaxHealth']) then
+				zn = 'IDLE'
+			else
+				ba = Color3['fromRGB'](255, 220, 50);
+				zn = 'INJURED'
+			end
+		else
+			ba = Color3['fromRGB'](255, 150, 0);
+			zn = 'KNOCKED'
+		end
+	end
+	if not (wd) then
+		if zn == 'IDLE' then
+			Bb = Ze('<font color=\"#DDDDDD\">%dm</font>', gf)
+		else
+			Bb = Ze('<font color=\"#DDDDDD\">%dm</font> | <font color=\"#%s\">%s</font>', gf, ba['ToHex'](ba), zn)
+		end
+	else
+		Bb = Ze('<font color=\"#DDDDDD\">%dm</font> | <font color=\"#%s\">[%s]</font>', gf, ba['ToHex'](ba), string['upper'](zn))
+	end
+	db[ma['UserId']] = {
+		dist = gf,
+		status = zn
+	}
+	local Um, sa, xn = Ze('<b>%s</b>\n%s', ma['Name'], Bb), wd and Hp or (not wd and Gp), wd and Jc or (not wd and id)
+	if not (xn) then
+		Mk(ab)
+	else
+		Ad(ab, ba)
+	end
+	local ll = Fo['FindFirstChild'](Fo, 'TagESP')
+	if sa then
+		if not (ll) then
+			ll = Instance['new']'BillboardGui';
+			ll['Name'] = 'TagESP';
+			ll['Adornee'] = Fo;
+			ll['Parent'] = Fo;
+			ll['AlwaysOnTop'] = true;
+			ll['Size'] = UDim2['new'](0, 150, 0, 35);
+			ll['StudsOffset'] = Zk(0, 4.5, 0);
+			ll['MaxDistance'] = 2000;
+			ll['ResetOnSpawn'] = false
+			local Cq = Instance['new']'TextLabel';
+			Cq['Name'] = 'Label';
+			Cq['Parent'] = ll;
+			Cq['BackgroundTransparency'] = 1;
+			Cq['Size'] = UDim2['new'](1, 0, 1, 0);
+			Cq['Font'] = Enum['Font']['GothamBold'];
+			Cq['TextScaled'] = true;
+			Cq['RichText'] = true;
+			Cq['Text'] = Um;
+			Cq['TextColor3'] = ba;
+			Cq['TextYAlignment'] = Enum['TextYAlignment']['Bottom']
+			local Hn = Instance['new']('UITextSizeConstraint', Cq);
+			Hn['MaxTextSize'] = 7;
+			Hn['MinTextSize'] = 5
+			local bc = Instance['new']('UIStroke', Cq);
+			bc['Thickness'] = 1.5;
+			bc['Color'] = Color3['fromRGB'](10, 10, 10);
+			bc['Transparency'] = 0.29999999999999999;
+			bc['LineJoinMode'] = Enum['LineJoinMode']['Round']
+		else
+			local vq = ll['FindFirstChild'](ll, 'Label')
+			if not (vq and vq['Text'] ~= Um) then
+			else
+				vq['Text'] = Um;
+				vq['TextColor3'] = ba
+			end
+		end
+	else
+		if not (ll) then
+		else
+			ll['Destroy'](ll)
+		end
+	end
+end
+local function Yi(un_)
+	local ei = un_['Character']
+	if not (ei) then
+	else
+		Mk(ei)
+		local S = ei['FindFirstChild'](ei, 'HumanoidRootPart') and ei['HumanoidRootPart']['FindFirstChild'](ei['HumanoidRootPart'], 'TagESP')
+		if not (S) then
+		else
+			S['Destroy'](S)
+		end
+	end
+end
+local Ug, Pj = Color3['fromRGB'](255, 140, 0), Color3['fromRGB'](0, 255, 120)
+local function So(Ni)
+	if not Ni or not Ni['Parent'] then
+		return true
+	end
+	local Re, co = ge(Ni, 'RepairProgress') or ge(Ni, 'Progress') or 0, Ni['FindFirstChild'](Ni, 'GenBitchHook')
+	if not (Re >= 100 or not vf) then
+	else
+		if co then
+			co['Destroy'](co)
+		end
+		Mk(Ni);
+		Ni['SetAttribute'](Ni, 'LastESPPercent', nil)
+		return (Re >= 100)
+	end
+	local ai, Zp = math['floor'](Re * 10) / 10, Ni['GetAttribute'](Ni, 'LastESPPercent')
+	if not (Zp == ai and co) then
+	else
+		return false
+	end
+	Ni['SetAttribute'](Ni, 'LastESPPercent', ai)
+	local pa = math['clamp'](Re, 0, 100)
+	local yn = (pa < 50) and gg['Generator']['Lerp'](gg['Generator'], Ug, pa / 50) or Ug['Lerp'](Ug, Pj, (pa - 50) / 50);
+	Ad(Ni, yn)
+	local Bf, Cj = Ze('%.1f%%', ai), Ni['FindFirstChild'](Ni, 'defaultMaterial', true) or (Ni['IsA'](Ni, 'Model') and Ni['PrimaryPart']) or Ni['FindFirstChildWhichIsA'](Ni, 'BasePart', true)
+	if not Cj then
+		return false
+	end
+	if not (co) then
+		co = Instance['new']'BillboardGui';
+		co['Name'] = 'GenBitchHook';
+		co['Parent'] = Ni;
+		co['Adornee'] = Cj;
+		co['AlwaysOnTop'] = true;
+		co['LightInfluence'] = 0;
+		co['ResetOnSpawn'] = false;
+		co['MaxDistance'] = 260;
+		co['Size'] = UDim2['new'](0, 140, 0, 28);
+		co['StudsOffset'] = Zk(0, 3.1000000000000001, 0)
+		local hl = Instance['new']'TextLabel';
+		hl['Name'] = 'Label';
+		hl['Parent'] = co;
+		hl['BackgroundTransparency'] = 1;
+		hl['Size'] = UDim2['fromScale'](1, 1);
+		hl['TextScaled'] = false;
+		hl['TextWrapped'] = false;
+		hl['TextXAlignment'] = Enum['TextXAlignment']['Center'];
+		hl['TextYAlignment'] = Enum['TextYAlignment']['Center'];
+		hl['Font'] = Enum['Font']['GothamBold'];
+		hl['TextSize'] = 8;
+		hl['RichText'] = false;
+		hl['Text'] = Bf;
+		hl['TextColor3'] = yn
+		local zi = Instance['new']'UIStroke';
+		zi['Parent'] = hl;
+		zi['ApplyStrokeMode'] = Enum['ApplyStrokeMode']['Contextual'];
+		zi['Thickness'] = 1.1000000000000001;
+		zi['Transparency'] = 0.25;
+		zi['Color'] = Color3['new'](0, 0, 0)
+		local fe = Instance['new']'UITextSizeConstraint';
+		fe['Parent'] = hl;
+		fe['MaxTextSize'] = 8;
+		fe['MinTextSize'] = 6
+	else
+		local I = co['FindFirstChild'](co, 'Label')
+		if I then
+			I['Text'] = Bf;
+			I['TextColor3'] = yn
+		end
+	end
+	return false
+end
+local function og()
+	if not workspace['CurrentCamera'] then
+		return
+	end
+	if # ia['GetPlayers'](ia) <= 1 then
+		return
+	end
+	local br_ = ia['GetPlayers'](ia)
+	for Bi, ln in ipairs(br_) do
+		if not (ln ~= He) then
+		else
+			local Iq, Kb = ln['Team'], false
+			if Iq and Iq['Name'] then
+				Kb = string['find'](string['lower'](Iq['Name']), 'killer') ~= nil
+			end
+			local Yk = false
+			if Kb and (Hp or Jc) then
+				Yk = true
+			elseif not (not Kb and (Gp or id)) then
+			else
+				Yk = true
+			end
+			if Yk then
+				nf(ln, Kb)
+			else
+				Yi(ln)
+			end
+		end
+	end
+	if not nc then
+		return
+	end
+	if not (vf) then
+		if not (uf['Generator']) then
+		else
+			local Vf = nc['Generators']
+			for Im, Sq in ipairs(Vf) do
+				if Sq and Sq['Parent'] then
+					Mk(Sq)
+					local Bl = Sq['FindFirstChild'](Sq, 'GenBitchHook')
+					if not (Bl) then
+					else
+						Bl['Destroy'](Bl)
+					end
+					if Sq['GetAttribute'](Sq, 'LastESPPercent') then
+						Sq['SetAttribute'](Sq, 'LastESPPercent', nil)
+					end
+				end
+			end
+			uf['Generator'] = false
+		end
+	else
+		if not uf['Generator'] then
+			uf['Generator'] = true
+		end
+		local Lf, Gq = nc['Generators'], {}
+		for of = 234, (# Lf) + 233 do
+			local e_ = Lf[(of - 233)]
+			if e_ and e_['Parent'] then
+				local jh = So(e_)
+				if not (not jh) then
+				else
+					Bp(Gq, e_)
+				end
+			end
+		end
+		nc['Generators'] = Gq;
+		zj = Gq
+	end
+	if not (hp) then
+		if not (uf['Pallet']) then
+		else
+			for cb, Hl in ipairs(nc['Pallets']) do
+				if Hl then
+					local Fq = Hl['FindFirstChild'](Hl, 'PalletTag')
+					if not (Fq) then
+					else
+						Fq['Destroy'](Fq)
+					end
+				end
+			end
+			uf['Pallet'] = false
+		end
+	else
+		if not (not uf['Pallet']) then
+		else
+			uf['Pallet'] = true
+		end
+		local qj = nc['Pallets']
+		for gj = # qj, 1, - 1 do
+			local Oj = qj[gj]
+			local di = Oj and Oj['Parent'] and Oj['IsDescendantOf'](Oj, workspace)
+			if not (di) then
+				if not (Oj) then
+				else
+					local mp = Oj['FindFirstChild'](Oj, 'PalletTag')
+					if mp then
+						mp['Destroy'](mp)
+					end
+				end
+				Mp(qj, gj)
+			else
+				local t_, ie = (Oj['IsA'](Oj, 'Model') and Oj['PrimaryPart']) or Oj['FindFirstChildWhichIsA'](Oj, 'BasePart', true) or (Oj['IsA'](Oj, 'BasePart') and Oj), false
+				if not (t_) then
+				else
+					if Oj['IsA'](Oj, 'BasePart') then
+						ie = Oj['Transparency'] < 1
+					else
+						local xi = Oj['GetDescendants'](Oj)
+						for Jj = 69, (# xi) + 68 do
+							local Sk = xi[(Jj - 68)]
+							if Sk['IsA'](Sk, 'BasePart') and Sk['Transparency'] < 1 then
+								ie = true
+								break
+							end
+						end
+					end
+				end
+				local Ak = string['lower'](Oj['Name'])
+				local function Fp(Th)
+					return Th == true or (type(Th) == 'number' and Th > 0)
+				end
+				local ch, Vq, ob = Fp(ge(Oj, 'Dropped')) or Fp(ge(Oj, 'IsDropped')), Fp(ge(Oj, 'Broken')) or Fp(ge(Oj, 'IsBroken')) or Fp(ge(Oj, 'Destroyed')), string['find'](Ak, 'fake') or string['find'](Ak, 'broken') or string['find'](Ak, 'destroyed')
+				if ch or Vq or ob or not ie or not t_ then
+					local Al = Oj['FindFirstChild'](Oj, 'PalletTag')
+					if not (Al) then
+					else
+						Al['Destroy'](Al)
+					end
+					if not (ch or Vq or ob) then
+					else
+						Mp(qj, gj)
+					end
+				else
+					local Pa = Oj['FindFirstChild'](Oj, 'PalletTag')
+					if Pa then
+						if not (not Pa['Adornee']) then
+						else
+							Pa['Adornee'] = t_
+						end
+						local Zh = Pa['FindFirstChild'](Pa, 'Label')
+						if not (Zh and Zh['TextColor3'] ~= gg['Pallet']) then
+						else
+							Zh['TextColor3'] = gg['Pallet']
+						end
+					else
+						local er = Xl('<b>[PALLET]</b>', gg['Pallet'], UDim2['new'](0, 50, 0, 18), 6);
+						er['Name'] = 'PalletTag';
+						er['Parent'] = Oj;
+						er['Adornee'] = t_;
+						er['MaxDistance'] = 140
+					end
+				end
+			end
+		end
+	end
+	if not (En) then
+		if uf['Gate'] then
+			for gm, Ke in ipairs(nc['Gates']) do
+				if Ke and Ke['Parent'] then
+					Mk(Ke)
+				end
+			end
+			uf['Gate'] = false
+		end
+	else
+		if not uf['Gate'] then
+			uf['Gate'] = true
+		end
+		local kc = nc['Gates']
+		for ue = # kc, 1, - 1 do
+			local Je = kc[ue]
+			if not (Je and Je['Parent']) then
+				Mp(kc, ue)
+			else
+				Ad(Je, gg['Gate'])
+			end
+		end
+	end
+	if not (Nm) then
+		if uf['Hook'] then
+			for rq, Ic in ipairs(nc['Hooks']) do
+				if Ic and Ic['Parent'] then
+					local if_ = Ic['FindFirstChild'](Ic, 'Model')
+					if not (if_) then
+						Mk(Ic)
+					else
+						for Vj, Jl in ipairs(if_['GetDescendants'](if_)) do
+							if Jl['IsA'](Jl, 'MeshPart') then
+								Mk(Jl)
+							end
+						end
+					end
+				end
+			end
+			uf['Hook'] = false
+		end
+	else
+		if not uf['Hook'] then
+			uf['Hook'] = true
+		end
+		local Kn = nc['Hooks']
+		for Yj = # Kn, 1, - 1 do
+			local Gh = Kn[Yj]
+			if Gh and Gh['Parent'] then
+				local Pf = Gh['FindFirstChild'](Gh, 'Model')
+				if Pf then
+					for qg, Pp in ipairs(Pf['GetDescendants'](Pf)) do
+						if Pp['IsA'](Pp, 'MeshPart') then
+							Ad(Pp, gg['Hook'])
+						end
+					end
+				else
+					Ad(Gh, gg['Hook'])
+				end
+			else
+				Mp(Kn, Yj)
+			end
+		end
+	end
+end
+local sm = {}
+local function ul(Wi)
+	local dq = workspace['CurrentCamera']
+	local Mj = dq['CFrame']['Position']
+	local f_, qp = (Wi['Position'] - Mj), He['Character'];
+	table['clear'](sm)
+	if dq then
+		table['insert'](sm, dq)
+	end
+	if qp then
+		table['insert'](sm, qp)
+	end
+	Dh['FilterDescendantsInstances'] = sm
+	local Jf = workspace['Raycast'](workspace, Mj, f_, Dh)
+	if Jf then
+		return Jf['Instance']['IsDescendantOf'](Jf['Instance'], Wi['Parent'])
+	end
+	return true
+end
+local function xm()
+	local so, ar
+	for Vb, tk in ipairs(ia['GetPlayers'](ia)) do
+		if tk ~= He and tk['Team'] and tk['Team']['Name']['lower'](tk['Team']['Name'])['find'](tk['Team']['Name']['lower'](tk['Team']['Name']), 'killer') and tk['Character'] then
+			local v, Li = tk['Character']['FindFirstChild'](tk['Character'], 'HumanoidRootPart'), tk['Character']['FindFirstChild'](tk['Character'], 'Humanoid')
+			if v and Li and Li['Health'] > 0 then
+				local Sa, me = Camera['WorldToViewportPoint'](Camera, v['Position'])
+				if me then
+					local cc = (Vector2['new'](Sa['X'], Sa['Y']) - Vector2['new'](Mouse['X'], Mouse['Y']))['Magnitude']
+					if not (cc <= Ba) then
+					else
+						if not (not ar or cc < ar) then
+						else
+							ar = cc;
+							so = v
+						end
+					end
+				end
+			end
+		end
+	end
+	return so
+end
+local function Og(nh)
+	local Bk, uq, lj = nil, ml, He['Team'] and He['Team']['Name']['lower'](He['Team']['Name']) or ''
+	local ni_, rm = lj['find'](lj, 'killer') ~= nil, workspace['CurrentCamera']
+	local Ud, Pi, em = rm['CFrame']['Position'], rm['ViewportSize']['X'] / 2, rm['ViewportSize']['Y'] / 2
+	local function Np(pn)
+		return pn == true or (type(pn) == 'number' and pn > 0)
+	end
+	if nh and nh['Parent'] then
+		local Yb = nh['Parent']
+		local An = Yb['FindFirstChild'](Yb, 'Humanoid')
+		if An and An['Health'] > 0 then
+			local Em, oj = Np(ge(Yb, 'Knocked')), Np(ge(Yb, 'IsHooked'))
+			if not (ni_ and (Em or oj)) then
+				local Km, Gm = rm['WorldToViewportPoint'](rm, nh['Position'])
+				if Gm then
+					local Dk, Qj = Km['X'] - Pi, Km['Y'] - em
+					local Gk = math['sqrt']((Dk * Dk) + (Qj * Qj))
+					if Gk <= ml and ul(nh) then
+						return nh
+					end
+				end
+			end
+		end
+	end
+	for Bd, Uq in ipairs(ia['GetPlayers'](ia)) do
+		if Uq ~= He and Uq['Character'] then
+			local Eh, Ea = Uq['Character'], Uq['Team'] and Uq['Team']['Name']['lower'](Uq['Team']['Name']) or ''
+			local Sg = Ea['find'](Ea, 'killer') ~= nil
+			if ni_ and Sg then
+				continue
+			end
+			if not (not ni_ and not Sg) then
+			else
+				continue
+			end
+			local Lj = Eh['FindFirstChild'](Eh, 'Humanoid')
+			if not (not Lj or Lj['Health'] <= 0) then
+			else
+				continue
+			end
+			if ni_ then
+				local in_, Qb = Np(ge(Eh, 'Knocked')), Np(ge(Eh, 'IsHooked'))
+				if not (in_ or Qb) then
+				else
+					continue
+				end
+			end
+			local Qp, od = getgenv()['AimbotPart'] or 'Torso', nil
+			if not (Qp == 'Head') then
+				if not (Qp == 'Torso') then
+					if Qp == 'Body' then
+						od = Eh['FindFirstChild'](Eh, 'HumanoidRootPart')
+					end
+				else
+					od = Eh['FindFirstChild'](Eh, 'UpperTorso') or Eh['FindFirstChild'](Eh, 'Torso')
+				end
+			else
+				od = Eh['FindFirstChild'](Eh, 'Head')
+			end
+			if not (not od) then
+			else
+				od = Eh['FindFirstChild'](Eh, 'HumanoidRootPart') or Eh['FindFirstChild'](Eh, 'Torso') or Eh['PrimaryPart']
+			end
+			if not (not od) then
+			else
+				continue
+			end
+			local dc = (od['Position'] - Ud)['Magnitude']
+			if dc > y then
+				continue
+			end
+			local fi, p = rm['WorldToViewportPoint'](rm, od['Position'])
+			if not (p) then
+			else
+				local Zn, ji = fi['X'] - Pi, fi['Y'] - em
+				local Eo = math['sqrt']((Zn * Zn) + (ji * ji))
+				if not (Eo <= uq) then
+				else
+					if ul(od) then
+						uq = Eo;
+						Bk = od
+					end
+				end
+			end
+		end
+	end
+	return Bk
+end
+local function kq()
+	pcall(function()
+		local Jm = workspace['FindFirstChild'](workspace, He['Name']) or He['Character']
+		local Eg, pd, df = Jm and Jm['FindFirstChildOfClass'](Jm, 'Humanoid'), Jm and Jm['FindFirstChild'](Jm, 'HumanoidRootPart'), workspace['CurrentCamera'];
+		pcall(function()
+			local Aa = Kl['FindFirstChild'](Kl, 'Remotes')
+			if not (Aa) then
+			else
+				local Rk = Aa['FindFirstChild'](Aa, 'Healing') and Aa['Healing']['FindFirstChild'](Aa['Healing'], 'Reset')
+				if Rk then
+					Rk['FireServer'](Rk)
+				end
+			end
+		end)
+		if Eg and pd then
+			pd['Anchored'] = false
+			if mm then
+				local jf = tonumber(vd) or 0;
+				Eg['WalkSpeed'] = 17 + (17 * (jf / 100))
+			else
+				Eg['WalkSpeed'] = 17
+			end
+			Eg['AutoRotate'] = true;
+			Eg['PlatformStand'] = false;
+			Eg['Sit'] = false
+			for Ta, Sn in ipairs(Eg['GetPlayingAnimationTracks'](Eg)) do
+				Sn['Stop'](Sn)
+			end
+			if not (Eg['GetState'](Eg) ~= Enum['HumanoidStateType']['Running']) then
+			else
+				Eg['ChangeState'](Eg, Enum['HumanoidStateType']['Running'])
+			end
+			local Ae = {
+				'Stunned',
+				'IsStunned',
+				'Healing',
+				'IsHealing',
+				'Repairing',
+				'IsRepairing',
+				'Interacting',
+				'Attacking'
+			}
+			for Ck, Bg in ipairs(Ae) do
+				if Jm['GetAttribute'](Jm, Bg) ~= nil then
+					Jm['SetAttribute'](Jm, Bg, false)
+				end
+				local Sc = Jm['FindFirstChild'](Jm, Bg)
+				if Sc and Sc['IsA'](Sc, 'ValueBase') then
+					Sc['Value'] = false
+				end
+			end
+			if df and df['CameraType'] ~= Enum['CameraType']['Custom'] then
+				df['CameraType'] = Enum['CameraType']['Custom'];
+				df['CameraSubject'] = Eg
+			end
+		end
+		Vc['Notify'](Vc, {
+			Title = 'Anti-Stuck Triggered',
+			Content = 'Karakter dan Kamera berhasil dibebaskan paksa!',
+			Icon = 'lucide:unlock'
+		})
+	end)
+end
+local function ok()
+	if not (getgenv()['IsBoostingGen']) then
+	else
+		return
+	end
+	getgenv()['IsBoostingGen'] = true
+	local Cn = Uc and Uc(game['GetService'](game, 'ReplicatedStorage')) or game['GetService'](game, 'ReplicatedStorage')
+	local nn = Cn['FindFirstChild'](Cn, 'Remotes')
+	if not nn then
+		getgenv()['IsBoostingGen'] = false
+		return
+	end
+	getgenv()['BoostCache'] = getgenv()['BoostCache'] or {}
+	local bl = getgenv()['BoostCache']
+	if not (not bl['SkillCheck']) then
+	else
+		for kk, fg in ipairs(nn['GetDescendants'](nn)) do
+			if fg['IsA'](fg, 'RemoteEvent') then
+				local d_ = fg['Name']['lower'](fg['Name'])
+				if not (d_['find'](d_, 'skillcheck')) then
+					if not (d_['find'](d_, 'groupproject') or d_['find'](d_, 'genproject') or d_['find'](d_, 'generatorboost')) then
+					else
+						bl['Project'] = fg
+					end
+				else
+					bl['SkillCheck'] = fg
+				end
+			end
+		end
+	end
+	local oe, dl = bl['SkillCheck'], bl['Project']
+	if not oe then
+		Vc['Notify'](Vc, {
+			Title = 'Generator Error',
+			Content = 'SkillCheck remote tidak ditemukan.',
+			Icon = 'lucide:alert-circle'
+		});
+		getgenv()['IsBoostingGen'] = false
+		return
+	end
+	local Qa = nc and nc['Generators']
+	if not (not Qa) then
+	else
+		getgenv()['IsBoostingGen'] = false
+		return
+	end
+	local gb, aa = 0, {}
+	for dk, Ab in ipairs(Qa) do
+		if Ab and Ab['Parent'] and Ab['IsA'](Ab, 'Model') and not aa[Ab] then
+			local el_ = tonumber(ge(Ab, 'RepairProgress') or ge(Ab, 'Progress') or 0) or 0
+			if el_ > 0 and el_ < 100 then
+				aa[Ab] = true
+				local On = {}
+				for ir, tc in ipairs(Ab['GetDescendants'](Ab)) do
+					if not (tc['IsA'](tc, 'BasePart') and tc['Name']['lower'](tc['Name'])['find'](tc['Name']['lower'](tc['Name']), 'point')) then
+					else
+						Bp(On, tc)
+					end
+				end
+				if # On > 0 then
+					gb += 1
+					for io = 158, (12) + 157 do
+						for vp, G in ipairs(On) do
+							if not (not G['Parent']) then
+							else
+								continue
+							end
+							pcall(function()
+								if not (dl) then
+								else
+									dl['FireServer'](dl, Ab, G)
+								end
+								oe['FireServer'](oe, 'success', 1, Ab, G)
+							end)
+						end
+						task['wait'](0.044999999999999998)
+					end
+				end
+			end
+		end
+	end
+	if not (gb > 0) then
+		Vc['Notify'](Vc, {
+			Title = 'No Targets',
+			Content = 'Tidak ada generator valid.',
+			Icon = 'lucide:info'
+		})
+	else
+		Vc['Notify'](Vc, {
+			Title = 'Generator Boost',
+			Content = 'Berhasil boost ' .. gb .. ' generator.',
+			Icon = 'lucide:bolt'
+		})
+	end
+	task['delay'](2, function()
+		getgenv()['IsBoostingGen'] = false
+	end)
+end
+Vc['AddTheme'](Vc, {
+	Name = 'Melonz',
+	Accent = Color3['fromHex']'#181422',
+	Background = Vc['Gradient'](Vc, {
+		['0'] = {
+			Color = Color3['fromHex']'#07070A',
+			Transparency = 0
+		},
+		['50'] = {
+			Color = Color3['fromHex']'#0F0D16',
+			Transparency = 0
+		},
+		['100'] = {
+			Color = Color3['fromHex']'#171320',
+			Transparency = 0
+		}
+	}, {
+		Rotation = 75
+	}),
+	BackgroundTransparency = 0,
+	Outline = Color3['fromHex']'#2E2940',
+	Text = Color3['fromHex']'#F3F4F6',
+	Placeholder = Color3['fromHex']'#A8ACB8',
+	Button = Color3['fromHex']'#1D1829',
+	Icon = Color3['fromHex']'#A1A1AA',
+	Hover = Color3['fromHex']'#C4B5FD',
+	WindowBackground = Color3['fromHex']'#0C0A12',
+	WindowShadow = Color3['fromHex']'#000000',
+	DialogBackground = Color3['fromHex']'#15111E',
+	DialogBackgroundTransparency = 0,
+	DialogTitle = Color3['fromHex']'#F5F3FF',
+	DialogContent = Color3['fromHex']'#C9CDD6',
+	DialogIcon = Color3['fromHex']'#9F7AEA',
+	WindowTopbarButtonIcon = Color3['fromHex']'#D8B4FE',
+	WindowTopbarTitle = Color3['fromHex']'#F5F3FF',
+	WindowTopbarAuthor = Color3['fromHex']'#8E94A7',
+	WindowTopbarIcon = Color3['fromHex']'#8B5CF6',
+	TabBackground = Color3['fromHex']'#120F1A',
+	TabTitle = Color3['fromHex']'#ECECF3',
+	TabIcon = Color3['fromHex']'#9CA3AF',
+	ElementBackground = Color3['fromHex']'#1A1625',
+	ElementTitle = Color3['fromHex']'#F5F3FF',
+	ElementDesc = Color3['fromHex']'#9FA6B2',
+	ElementIcon = Color3['fromHex']'#A78BFA',
+	PopupBackground = Color3['fromHex']'#171320',
+	PopupBackgroundTransparency = 0,
+	PopupTitle = Color3['fromHex']'#F5F3FF',
+	PopupContent = Color3['fromHex']'#D1D5DB',
+	PopupIcon = Color3['fromHex']'#8B5CF6',
+	Toggle = Color3['fromHex']'#4338CA',
+	ToggleBar = Color3['fromHex']'#E9D5FF',
+	Checkbox = Color3['fromHex']'#4338CA',
+	CheckboxIcon = Color3['fromHex']'#F5F3FF',
+	Slider = Color3['fromHex']'#4338CA',
+	SliderThumb = Color3['fromHex']'#F5F3FF'
+})
+local function dp(Jq, _j, yo, xo)
+	if not (type(Jq) ~= 'string' or Jq == '') then
+	else
+		return ''
+	end
+	local al, Nc = {}, {}
+	for Xg, Ig in utf8['codes'](Jq) do
+		al[# al + 1] = utf8['char'](Ig)
+	end
+	local Td = # al
+	local eb = math['max'](Td - 1, 1);
+	xo = tonumber(xo) or 0
+	for s_ = 130, (Td) + 129 do
+		local Hb = math['abs'](((((s_ - 129) - 1) / eb) + xo) % 2 - 1)
+		local C = _j['Lerp'](_j, yo, Hb);
+		Nc[(s_ - 129)] = string['format']('<font color=\"#%s\">%s</font>', C['ToHex'](C), al[(s_ - 129)])
+	end
+	return table['concat'](Nc)
+end
+local Dq = Vc['CreateWindow'](Vc, {
+	Title = '<b>' .. dp('Melonz Hub', Color3['fromHex']'#D1D1D1', Color3['fromHex']'#8E9196') .. '</b>',
+	Author = dp('Violence District', Color3['fromHex']'#E0E0E0', Color3['fromHex']'#A1A1A1'),
+	Icon = 'rbxassetid://106965358654204',
+	Theme = 'Melonz',
+	Size = UDim2['fromOffset'](620, 420),
+	Resizable = true,
+	MinSize = Oc(450, 300),
+	MaxSize = Oc(600, 500),
+	NewElements = true,
+	ElementsRadius = 12,
+	Transparent = false,
+	IgnoreAlerts = true,
+	HideSearchBar = false,
+	Background = 'https://www.image2url.com/r2/default/images/1777515589556-3a362ac2-b45e-4d0e-bea2-13e4c2ac0a33.png',
+	BackgroundImageTransparency = 0.84999999999999998,
+	SideBarWidth = 175,
+	TopBarButtonIconSize = 18,
+	Folder = 'MelonzHub',
+	ToggleKey = Enum['KeyCode']['K'],
+	OpenButton = {
+		Title = dp('Melonz Hub', Color3['fromHex']'#ECF0F1', Color3['fromHex']'#95A5A6'),
+		Icon = 'rbxassetid://106965358654204',
+		CornerRadius = UDim['new'](1, 0),
+		StrokeThickness = 2.2000000000000002,
+		Draggable = true,
+		Enabled = true,
+		OnlyMobile = false,
+		Scale = 0.84999999999999998,
+		Color = ColorSequence['new']{
+			ColorSequenceKeypoint['new'](0, Color3['fromHex']'#ECF0F1'),
+			ColorSequenceKeypoint['new'](0.5, Color3['fromHex']'#95A5A6'),
+			ColorSequenceKeypoint['new'](1, Color3['fromHex']'#2C3E50')
+		}
+	},
+	Topbar = {
+		Height = 45,
+		ButtonsType = 'Default'
+	}
+});
+Dq['Tag'](Dq, {
+	Title = '<b>' .. dp('@sukitovone', Color3['fromHex']'#ECF0F1', Color3['fromHex']'#95A5A6') .. '</b>',
+	Icon = 'rbxassetid://101132151462030',
+	Border = true,
+	Color = Color3['fromHex']'#161E27'
+});
+Dq['Divider'](Dq);
+Mg = Dq['Tab'](Dq, {
+	Title = 'Profile & Info',
+	ShowTabTitle = true,
+	Icon = 'lucide:user'
+})
+local bi = Dq['Tab'](Dq, {
+	Title = 'VIP',
+	ShowTabTitle = true,
+	Icon = 'rbxassetid://14849573900'
+});
+Dq['Divider'](Dq)
+local ec, ee, wm, Ok, Fe, pf, rj = Dq['Tab'](Dq, {
+	Title = 'Automation',
+	Icon = 'lucide:bot'
+}), Dq['Tab'](Dq, {
+	Title = 'Survivor',
+	Icon = 'lucide:shield'
+}), Dq['Tab'](Dq, {
+	Title = 'Killer',
+	Icon = 'lucide:sword'
+}), Dq['Tab'](Dq, {
+	Title = 'Combat',
+	Icon = 'lucide:crosshair'
+}), Dq['Tab'](Dq, {
+	Title = 'Visuals',
+	Icon = 'lucide:eye'
+}), Dq['Tab'](Dq, {
+	Title = 'Spoofing',
+	Icon = 'lucide:ghost'
+}), Dq['Tab'](Dq, {
+	Title = 'Settings',
+	Icon = 'lucide:settings'
+});
+Mg['Select'](Mg)
+local qm, Za = getgenv()['SCRIPT_KEY'] or 'Free User', getgenv()['MELONZ_PREMIUM'] or false
+local eq, Tm, Ro, Xo, Tp = Za and 'PREMIUM' or 'FREE', Za and '#7F5AF0' or '#8A8F98', (identifyexecutor and identifyexecutor()) or (getexecutorname and getexecutorname()) or 'Unknown', (na['TouchEnabled'] and not na['KeyboardEnabled']) and 'Mobile' or 'PC', string['format']('https://www.roblox.com/headshot-thumbnail/image?userId=%d&width=420&height=420&format=png', He['UserId']);
+Mg['Section'](Mg, {
+	Title = 'Profile & Dashboard',
+	Icon = 'lucide:user-round'
+})
+local ya = Mg['Group'](Mg);
+ya['Paragraph'](ya, {
+	Title = string['format']("<font color=\'#F5F5F5\'><b>%s</b></font> <font color=\'#8B93A7\'>@%s</font>", He['DisplayName'], He['Name']),
+	Desc = string['format']("<font color=\'#C9D1D9\'><b>User ID</b></font> \226\128\162 %d\n<font color=\'#C9D1D9\'><b>Account Age</b></font> \226\128\162 %d Days", He['UserId'], He['AccountAge']),
+	Image = Tp,
+	ImageSize = 55
+});
+Mg['Space'](Mg, {
+	Columns = 1
+})
+local sp = Mg['Group'](Mg);
+sp['Paragraph'](sp, {
+	Title = dp('Melonz Hub', Color3['fromHex']'#7C3AED', Color3['fromHex']'#4F46E5'),
+	Desc = string['format']("\240\159\148\145 <font color=\'#D1D5DB\'><b>Key</b></font> \226\128\162 <font color=\'#FACC15\'>%s</font>\n\240\159\146\142 <font color=\'#D1D5DB\'><b>License</b></font> \226\128\162 <font color=\'%s\'><b>%s</b></font>\n\240\159\150\165\239\184\143 <font color=\'#D1D5DB\'><b>Platform</b></font> \226\128\162 <font color=\'#93C5FD\'>%s</font>\n\226\154\161 <font color=\'#D1D5DB\'><b>Executor</b></font> \226\128\162 <font color=\'#60A5FA\'>%s</font>", qm, Tm, eq, Xo, Ro)
+});
+Mg['Space'](Mg, {
+	Columns = 1
+});
+Mg['Section'](Mg, {
+	Title = 'Credits & Information'
+});
+Mg['Paragraph'](Mg, {
+	Title = 'Developer: @sukitovone | @forkt',
+	Desc = 'Dapatkan update script terbaru, beri saran, atau laporkan bug langsung ke developer!',
+	Image = 'rbxassetid://18505728201',
+	Buttons = {
+		{
+			Title = 'Copy Discord Link',
+			Icon = 'sfsymbols:link',
+			Callback = function()
+				local Wa, kb = pcall(function()
+					setclipboard'https://discord.gg/wCVUTHgsQV'
+				end)
+				if not (Wa) then
+					Vc['Notify'](Vc, {
+						Title = 'Gagal Menyalin',
+						Content = 'Executor kamu tidak mendukung fitur Copy Clipboard.',
+						Icon = 'sfsymbols:xmarkCircleFill'
+					})
+				else
+					Vc['Notify'](Vc, {
+						Title = 'Success!',
+						Content = 'Link Discord berhasil disalin ke Clipboard!',
+						Icon = 'sfsymbols:checkmarkCircle'
+					})
+				end
+			end
+		}
+	}
+})
+local Qm = bi['Section'](bi, {
+	Title = dp('Automatic System', Color3['fromHex']'#F59E0B', Color3['fromHex']'#EF4444'),
+	Box = true,
+	TextXAlignment = 'Left',
+	TextSize = 18,
+	Icon = 'lucide:bot'
+});
+Qm['Toggle'](Qm, {
+	Title = 'Auto Play (Smart AI)',
+	Desc = 'AI otomatis mencari Generator, Gate & menghindari Killer.',
+	Flag = 'F_AutoFarm',
+	Value = false,
+	Locked = not getgenv()['MELONZ_PREMIUM'],
+	Callback = function(Sf)
+		if not (Sf and not getgenv()['MELONZ_PREMIUM']) then
+		else
+			mo = false
+			return
+		end
+		mo = Sf
+		if not (Sf) then
+			local Y = He['Character']
+			local Hm, Ql = Y and Y['FindFirstChildOfClass'](Y, 'Humanoid'), Y and Y['FindFirstChild'](Y, 'HumanoidRootPart')
+			if not (Hm and Ql) then
+			else
+				Hm['MoveTo'](Hm, Ql['Position'])
+			end
+			Vc['Notify'](Vc, {
+				Title = 'AI Disabled',
+				Content = 'Smart AI berhasil dimatikan.',
+				Icon = 'lucide:circle-off'
+			})
+		else
+			Tn = true;
+			eo = 'Perfect';
+			Vc['Notify'](Vc, {
+				Title = 'AI Enabled',
+				Content = 'Smart survivor bot berhasil diaktifkan.',
+				Icon = 'lucide:bot'
+			})
+		end
+	end
+});
+Qm['Toggle'](Qm, {
+	Title = 'Moonwalk',
+	Desc = 'Movement zigzag otomatis untuk dodge Killer.',
+	Flag = 'F_Moonwalk',
+	Value = false,
+	Locked = not getgenv()['MELONZ_PREMIUM'],
+	Callback = function(Nf)
+		getgenv()['MoonwalkEnabled'] = Nf
+		if Ie then
+			Ie['Enabled'] = Nf
+		end
+		if not Nf and nil then
+			(nil)['AutoRotate'] = true
+		end
+		Vc['Notify'](Vc, {
+			Title = Nf and 'Moonwalk Enabled' or 'Moonwalk Disabled',
+			Content = Nf and 'Tekan tombol/R untuk mulai zigzag.' or 'Moonwalk dimatikan.',
+			Icon = Nf and 'lucide:orbit' or 'lucide:circle-off'
+		})
+	end
+});
+Qm['Slider'](Qm, {
+	Title = 'MoonWalk Intensity',
+	Desc = 'Semakin tinggi semakin agresif zigzag.',
+	Step = 1,
+	Flag = 'F_ZigzagIntense',
+	Locked = not getgenv()['MELONZ_PREMIUM'],
+	Value = {
+		Min = 5,
+		Max = 50,
+		Default = 11
+	},
+	Callback = function(jg)
+		getgenv()['MoonwalkZigzagSpeed'] = type(jg) == 'table' and jg['Value'] or jg
+	end
+});
+Qm['Slider'](Qm, {
+	Title = 'Speed Boost MoonWalk',
+	Desc = 'Multiplier movement saat Moonwalk aktif.',
+	Step = 0.01,
+	Flag = 'F_MoveBoost',
+	Locked = not getgenv()['MELONZ_PREMIUM'],
+	Value = {
+		Min = 1,
+		Max = 1.5,
+		Default = 1.0800000000000001
+	},
+	Callback = function(rh)
+		getgenv()['MoonwalkBoostPower'] = type(rh) == 'table' and rh['Value'] or rh
+	end
+})
+local Ij = bi['Section'](bi, {
+	Title = dp('Survivor Defense', Color3['fromHex']'#F59E0B', Color3['fromHex']'#EF4444'),
+	Box = true,
+	TextXAlignment = 'Left',
+	TextSize = 18,
+	Icon = 'lucide:shield'
+});
+Ij['Toggle'](Ij, {
+	Title = 'Auto Dagger',
+	Desc = 'Auto parry saat Killer mendekat.',
+	Flag = 'F_AutoParry',
+	Value = false,
+	Locked = not getgenv()['MELONZ_PREMIUM'],
+	Callback = function(nb)
+		if nb and not getgenv()['MELONZ_PREMIUM'] then
+			return
+		end
+		Ha = nb
+	end
+});
+Ij['Dropdown'](Ij, {
+	Title = 'Killer Matchup',
+	Desc = 'Optimasi timing Auto Dagger berdasarkan Killer.',
+	Flag = 'F_ParryMatchup',
+	Locked = not getgenv()['MELONZ_PREMIUM'],
+	Values = {
+		'Auto-Detect',
+		'Default',
+		'Abysswalker',
+		'Hidden',
+		'The Killer',
+		'Masked',
+		'Stalker',
+		'Veil',
+		'Slasher'
+	},
+	Value = 'Auto-Detect',
+	Callback = function(Pl)
+		getgenv()['ParryMatchup'] = Pl
+	end
+});
+Ij['Slider'](Ij, {
+	Title = 'Parry Distance',
+	Desc = 'Jarak deteksi Auto Dagger.',
+	Step = 1,
+	Flag = 'F_ParryDist',
+	Locked = not getgenv()['MELONZ_PREMIUM'],
+	Value = {
+		Min = 3,
+		Max = 20,
+		Default = 10
+	},
+	Callback = function(np)
+		local Ff = type(np) == 'table' and np['Value'] or np;
+		Ff = tonumber(Ff) or 10;
+		jn = math['clamp'](Ff, 3, 20)
+	end
+});
+Ij['Slider'](Ij, {
+	Title = 'Aim Strictness',
+	Desc = 'Akurasi prediksi movement Killer.',
+	Step = 0.10000000000000001,
+	Flag = 'F_AimStrict',
+	Locked = not getgenv()['MELONZ_PREMIUM'],
+	Value = {
+		Min = 0.5,
+		Max = 3,
+		Default = 1.3
+	},
+	Callback = function(Ho)
+		local h = type(Ho) == 'table' and Ho['Value'] or Ho;
+		h = tonumber(h) or 1.3;
+		getgenv()['AimStrictness'] = math['clamp'](h, 0.5, 3)
+	end
+});
+Ij['Slider'](Ij, {
+	Title = 'Parry Delay',
+	Desc = 'Custom timing Auto Dagger (ms).',
+	Step = 10,
+	Flag = 'F_ParryDelay',
+	Locked = not getgenv()['MELONZ_PREMIUM'],
+	Value = {
+		Min = - 150,
+		Max = 1000,
+		Default = 0
+	},
+	Callback = function(jc)
+		if not (not getgenv()['MELONZ_PREMIUM']) then
+		else
+			return
+		end
+		local tm = type(jc) == 'table' and (jc['Value'] or jc['Default']) or jc;
+		tm = tonumber(tm) or 0;
+		tm = math['clamp'](tm, - 150, 1000);
+		getgenv()['ParryDelayOffset'] = tm / 1000
+	end
+});
+Ij['Toggle'](Ij, {
+	Title = 'Auto Wiggle',
+	Desc = 'Otomatis escape saat dibawa Killer.',
+	Flag = 'F_AutoWiggle',
+	Value = false,
+	Locked = true,
+	LockedTitle = 'Maintenance',
+	Callback = function(Hg)
+		if not (Hg and not getgenv()['MELONZ_PREMIUM']) then
+		else
+			return
+		end
+		Ee = Hg
+	end
+});
+bi['Section'](bi, {
+	Title = 'Silent Aim (VIP)',
+	Box = true,
+	TextSize = 19
+});
+bi['Toggle'](bi, {
+	Title = 'Silent Aim Pistol',
+	Desc = 'Peluru otomatis mengarah ke badan Killer.',
+	Flag = 'F_SilentAimPistol',
+	Locked = not getgenv()['MELONZ_PREMIUM'],
+	Value = false,
+	Callback = function(Bn)
+		dd = Bn;
+		Vc['Notify'](Vc, {
+			Title = Bn and 'Silent Aim Enabled' or 'Silent Aim Disabled',
+			Content = Bn and 'Auto lock peluru aktif.' or 'Silent Aim dimatikan.',
+			Icon = Bn and 'lucide:crosshair' or 'lucide:circle-off'
+		})
+	end
+});
+bi['Slider'](bi, {
+	Title = 'Silent Aim FOV',
+	Desc = 'Radius lock target.',
+	Step = 5,
+	Flag = 'F_SilentAimFOV',
+	Locked = not getgenv()['MELONZ_PREMIUM'],
+	Value = {
+		Min = 40,
+		Max = 300,
+		Default = 120
+	},
+	Callback = function(mh)
+		local hb = type(mh) == 'table' and mh['Value'] or mh;
+		Ba = math['clamp'](tonumber(hb) or 120, 40, 300)
+	end
+});
+ee['Section'](ee, {
+	Title = 'Health & Protection'
+})
+local af = ee['Group'](ee);
+af['Toggle'](af, {
+	Title = 'Instant Heal',
+	Flag = 'F_InstantHeal',
+	Value = false,
+	Callback = function(Vm)
+		Jn = Vm
+	end
+});
+af['Toggle'](af, {
+	Title = 'Anti Knock',
+	Flag = 'F_AntiKnock',
+	Value = false,
+	Callback = function(Cl)
+		_d = Cl
+	end
+});
+ee['Space'](ee, {
+	Columns = 1
+});
+ee['Section'](ee, {
+	Title = 'Movement Modification'
+})
+local rd = ee['Group'](ee);
+rd['Toggle'](rd, {
+	Title = 'No Slowdown',
+	Flag = 'F_NoSlowdown',
+	Value = false,
+	Callback = function(km)
+		Co = km
+	end
+});
+rd['Toggle'](rd, {
+	Title = 'Speed Boost',
+	Flag = 'F_SpeedBoost',
+	Locked = false,
+	Value = false,
+	Callback = function(Pg)
+		mm = Pg
+	end
+});
+ee['Slider'](ee, {
+	Title = 'Speed Boost Power',
+	Desc = 'Persentase tambahan speed.',
+	Step = 1,
+	IsTooltip = true,
+	Locked = false,
+	LockedTitle = 'Maintenance',
+	Flag = 'F_BoostSpeed',
+	Value = {
+		Min = 0,
+		Max = 150,
+		Default = 8
+	},
+	Callback = function(xk)
+		vd = tonumber(type(xk) == 'table' and (xk['Value'] or xk['Default']) or xk) or 0
+	end
+});
+ee['Space'](ee, {
+	Columns = 1
+});
+ee['Section'](ee, {
+	Title = 'Stealth'
+});
+ee['Toggle'](ee, {
+	Title = 'Silent Actions (Anti-Noise)',
+	Desc = 'Memblokir notifikasike Killer saat kamu lari atau melompat jendela.',
+	Flag = 'F_SilentActions',
+	Value = false,
+	Callback = function(Df)
+		sk = Df
+	end
+});
+ee['Toggle'](ee, {
+	Title = 'Anti Fall Slow',
+	Desc = 'Mencegah animasi saat jatuh dari tempat tinggi.',
+	Flag = 'F_AntiFall',
+	Value = false,
+	Callback = function(Nd)
+		cr = Nd
+	end
+});
+ee['Toggle'](ee, {
+	Title = 'Anti Aura (No Detect)',
+	Desc = 'Memblokir sinyal pelacak! Killer tidak akan bisa melihat Auramu',
+	Flag = 'F_AntiAura',
+	Value = false,
+	Callback = function(Zq)
+		getgenv()['AntiAura'] = Zq
+	end
+});
+ee['Toggle'](ee, {
+	Title = 'Notify Killer Stun',
+	Desc = 'Memunculkan notifikasi global jika Killer terkena Stun (Pallet/Dagger).',
+	Flag = 'F_NotifyStun',
+	Value = false,
+	Callback = function(jl)
+		Fd = jl
+	end
+});
+ee['Button'](ee, {
+	Title = 'Force Reset State (Anti-Stuck)',
+	Desc = 'Membongkar paksa jangkar fisik, animasi, kamera, dan status kaku dari server.',
+	Icon = 'lucide:refresh-cw',
+	Callback = function()
+		kq()
+	end
+});
+ee['Keybind'](ee, {
+	Title = 'Anti-Stuck Hotkey (PC Only)',
+	Desc = 'Pilih tombol keyboard untuk memicu Anti-Stuck secara instan tanpa perlu membuka UI.',
+	Icon = 'lucide:keyboard',
+	Default = 'L',
+	Callback = function()
+		kq()
+	end
+});
+ee['Space'](ee, {
+	Columns = 2
+});
+wm['Section'](wm, {
+	Title = 'Vein Killer Modification'
+});
+wm['Toggle'](wm, {
+	Title = 'Vein Spear: Drop Prediction',
+	Flag = 'F_SpearPrediction',
+	Locked = true,
+	LockedTitle = 'Maintenance',
+	Value = false,
+	Callback = function(fo_)
+		kf = fo_
+	end
+});
+wm['Toggle'](wm, {
+	Title = 'Veil Spear : No Gravity',
+	Desc = 'Menghilangkan drop/gravitasi spear Veil.',
+	Flag = 'F_AntiGravSpear',
+	Value = false,
+	Callback = function(il)
+		ae = il
+	end
+});
+wm['Space'](wm, {
+	Columns = 1
+});
+wm['Section'](wm, {
+	Title = 'Killer Advantages'
+})
+local Jh = wm['Group'](wm);
+Jh['Toggle'](Jh, {
+	Title = 'Anti-Blind',
+	Flag = 'F_AntiBlind',
+	Value = false,
+	Callback = function(qk)
+		_b = qk
+		if qk then
+			for F, jb in ipairs(Ym['GetChildren'](Ym)) do
+				if not (jb['IsA'](jb, 'BlurEffect') or jb['IsA'](jb, 'ColorCorrectionEffect') or jb['IsA'](jb, 'Atmosphere') or jb['IsA'](jb, 'BloomEffect') or jb['IsA'](jb, 'SunRaysEffect') or jb['IsA'](jb, 'DepthOfFieldEffect')) then
+				else
+					pcall(function()
+						jb['Destroy'](jb)
+					end)
+				end
+			end
+		end
+	end
+});
+Jh['Toggle'](Jh, {
+	Title = 'Anti-Stun',
+	Flag = 'F_AntiStun',
+	Value = false,
+	Callback = function(dm)
+		r_ = dm
+	end
+});
+wm['Toggle'](wm, {
+	Title = 'Double Damage Generator',
+	Desc = 'Deals double damage when kicking a Generator.',
+	Flag = 'F_DoubleDamage',
+	Value = false,
+	Callback = function(bj)
+		Wl = bj
+	end
+});
+wm['Button'](wm, {
+	Title = 'Activate Killer Power',
+	Desc = "Instantly triggers the Killer\'s special power.",
+	Icon = 'sfsymbols:starFill',
+	Callback = function()
+		pcall(function()
+			Kl['Remotes']['Killers']['Killer']['ActivatePower']['FireServer'](Kl['Remotes']['Killers']['Killer']['ActivatePower'])
+		end)
+	end
+});
+Fe['Section'](Fe, {
+	Title = 'Player & Entity Visuals'
+})
+local Ki = Fe['Group'](Fe);
+Ki['Toggle'](Ki, {
+	Title = 'ESP Survivor (Name)',
+	Flag = 'F_ESPSurvivorName',
+	Value = false,
+	Callback = function(Da)
+		Gp = Da;
+		og()
+	end
+});
+Ki['Space'](Ki);
+Ki['Toggle'](Ki, {
+	Title = 'ESP Survivor (Highlight)',
+	Flag = 'F_ESPSurvivorHighlight',
+	Value = false,
+	Callback = function(um)
+		id = um;
+		og()
+	end
+})
+local do_ = Fe['Group'](Fe);
+do_['Toggle'](do_, {
+	Title = 'ESP Killer (Name)',
+	Flag = 'F_ESPKillerName',
+	Value = false,
+	Callback = function(rb)
+		Hp = rb;
+		og()
+	end
+});
+do_['Space'](do_);
+do_['Toggle'](do_, {
+	Title = 'ESP Killer (Highlight)',
+	Flag = 'F_ESPKillerHighlight',
+	Value = false,
+	Callback = function(ik)
+		Jc = ik;
+		og()
+	end
+});
+Fe['Space'](Fe, {
+	Columns = 1
+});
+Fe['Section'](Fe, {
+	Title = 'Object Visuals'
+})
+local Zi = Fe['Group'](Fe);
+Zi['Toggle'](Zi, {
+	Title = 'ESP Generator',
+	Desc = 'Displays unfinished Gens.',
+	Flag = 'F_ESPGen',
+	Value = false,
+	Callback = function(Mc)
+		vf = Mc;
+		og()
+	end
+});
+Zi['Space'](Zi);
+Zi['Toggle'](Zi, {
+	Title = 'ESP Pallet',
+	Desc = 'Displays Pallets.',
+	Flag = 'F_ESPPallet',
+	Value = false,
+	Callback = function(pp)
+		hp = pp;
+		og()
+	end
+})
+local zd = Fe['Group'](Fe);
+zd['Toggle'](zd, {
+	Title = 'ESP Exit Gate',
+	Desc = 'Displays Exit Gates.',
+	Flag = 'F_ESPGate',
+	Value = false,
+	Callback = function(Xf)
+		En = Xf;
+		og()
+	end
+});
+zd['Space'](zd);
+zd['Toggle'](zd, {
+	Title = 'ESP Hook',
+	Desc = 'Displays Hook locations.',
+	Flag = 'F_ESPHook',
+	Value = false,
+	Callback = function(U)
+		Nm = U;
+		og()
+	end
+});
+Fe['Space'](Fe, {
+	Columns = 1
+})
+local Pe = Fe['Section'](Fe, {
+	Title = dp('Camera Viewport', Color3['fromHex']'#6366F1', Color3['fromHex']'#06B6D4'),
+	Box = true,
+	TextXAlignment = 'Left',
+	TextSize = 18,
+	Icon = 'lucide:camera'
+});
+Pe['Toggle'](Pe, {
+	Title = 'Custom FOV',
+	Desc = 'Mengatur jarak pandang kamera.',
+	Flag = 'F_CustomFOV',
+	Value = false,
+	Callback = function(ui)
+		Kg = ui
+	end
+});
+Pe['Slider'](Pe, {
+	Title = 'Field Of View',
+	Desc = 'Semakin tinggi semakin luas pandangan.',
+	Step = 1,
+	IsTooltip = true,
+	Flag = 'F_FOVValue',
+	Value = {
+		Min = 70,
+		Max = 120,
+		Default = 100
+	},
+	Callback = function(Rc)
+		wi = type(Rc) == 'table' and (tonumber(Rc['Value']) or 100) or tonumber(Rc) or 100
+	end
+});
+Pe['Toggle'](Pe, {
+	Title = 'Crosshair',
+	Desc = 'Menampilkan titik aim di tengah layar.',
+	Flag = 'F_Crosshair',
+	Value = false,
+	Callback = function(Kj)
+		local Op = getgenv()['CrosshairGui']
+		if not (Op) then
+		else
+			Op['Enabled'] = Kj
+		end
+	end
+});
+Pe['Slider'](Pe, {
+	Title = 'Crosshair Size',
+	Desc = 'Mengatur ukuran crosshair.',
+	Step = 1,
+	IsTooltip = true,
+	Flag = 'F_CrosshairSize',
+	Value = {
+		Min = 2,
+		Max = 25,
+		Default = 6
+	},
+	Callback = function(b_)
+		local Xh, Ip = type(b_) == 'table' and (tonumber(b_['Value']) or 6) or tonumber(b_) or 6, getgenv()['CrosshairGui']
+		if Ip then
+			local ho = Ip['FindFirstChild'](Ip, 'DotMarker')
+			if not (ho) then
+			else
+				ho['Size'] = UDim2['new'](0, Xh, 0, Xh)
+			end
+		end
+	end
+});
+Pe['Toggle'](Pe, {
+	Title = 'FPP / TPP Mode',
+	Desc = 'Switch antara First Person & Third Person.',
+	Flag = 'F_CameraToggle',
+	Value = false,
+	Callback = function(Wg)
+		local no_ = na['TouchEnabled'] and not na['KeyboardEnabled']
+		if not (no_) then
+			am = Wg;
+			Lg(Wg)
+		else
+			if Be then
+				Be['Visible'] = Wg
+				if not Wg then
+					am = false;
+					Lg(false);
+					Be['BackgroundColor3'] = Color3['fromRGB'](75, 150, 255);
+					Be['Text'] = 'TPP'
+				end
+			end
+		end
+	end
+});
+Fe['Space'](Fe, {
+	Columns = 2
+});
+Fe['Section'](Fe, {
+	Title = 'World Optimization',
+	Box = true
+});
+Fe['Toggle'](Fe, {
+	Title = 'Remove All Visual Effects',
+	Desc = 'Menyapu bersih semua efek Blur, Bloom, DoF, SunRays, dan Kabut.',
+	Flag = 'F_RemoveDoF',
+	Value = false,
+	Callback = function(ud)
+		if not (ud) then
+			if getgenv()['Melonz_HiddenEffects'] then
+				for sj, i_ in ipairs(getgenv()['Melonz_HiddenEffects']) do
+					if i_['Obj'] then
+						if i_['OldParent'] then
+							i_['Obj']['Parent'] = i_['OldParent']
+						elseif not (i_['WasEnabled']) then
+						else
+							pcall(function()
+								i_['Obj']['Enabled'] = true
+							end)
+						end
+					end
+				end
+				table['clear'](getgenv()['Melonz_HiddenEffects'])
+			end
+			if getgenv()['Melonz_OldFogStart'] then
+				Ym['FogStart'] = getgenv()['Melonz_OldFogStart'];
+				Ym['FogEnd'] = getgenv()['Melonz_OldFogEnd']
+			end
+			Vc['Notify'](Vc, {
+				Title = 'Vision Restored',
+				Content = 'Efek visual bawaan game dikembalikan.',
+				Icon = 'lucide:eye'
+			})
+		else
+			getgenv()['Melonz_HiddenEffects'] = getgenv()['Melonz_HiddenEffects'] or {};
+			table['clear'](getgenv()['Melonz_HiddenEffects'])
+			local function sb(pi)
+				for Fh, Ml in ipairs(pi['GetDescendants'](pi)) do
+					local Sp = string['lower'](Ml['Name'])
+					if not (Ml['IsA'](Ml, 'PostEffect') or Ml['IsA'](Ml, 'Clouds') or Ml['IsA'](Ml, 'Atmosphere') or Sp['find'](Sp, 'bloom') or Sp['find'](Sp, 'dof') or Sp['find'](Sp, 'sunray') or Sp['find'](Sp, 'blur')) then
+					else
+						if Ml['IsA'](Ml, 'Atmosphere') then
+							Bp(getgenv()['Melonz_HiddenEffects'], {
+								Obj = Ml,
+								OldParent = Ml['Parent']
+							});
+							Ml['Parent'] = nil
+						else
+							pcall(function()
+								if Ml['Enabled'] then
+									Bp(getgenv()['Melonz_HiddenEffects'], {
+										Obj = Ml,
+										WasEnabled = true
+									});
+									Ml['Enabled'] = false
+								end
+							end)
+						end
+					end
+				end
+			end
+			sb(Ym);
+			sb(workspace['CurrentCamera']);
+			getgenv()['Melonz_OldFogStart'] = Ym['FogStart'];
+			getgenv()['Melonz_OldFogEnd'] = Ym['FogEnd'];
+			Ym['FogStart'] = 9000000000;
+			Ym['FogEnd'] = 9000000000;
+			Vc['Notify'](Vc, {
+				Title = 'Vision Cleared',
+				Content = 'Semua filter layar dan kabut berhasil disembunyikan!',
+				Icon = 'lucide:eye-off'
+			})
+		end
+	end
+});
+Fe['Space'](Fe, {
+	Columns = 1
+})
+local Xb = Fe['Group'](Fe, {});
+Xb['Button'](Xb, {
+	Title = 'Force Fullbright',
+	Icon = 'lucide:sun',
+	Justify = 'Center',
+	Color = Color3['fromRGB'](195, 250, 30),
+	Callback = function()
+		Ym['Ambient'] = Color3['fromRGB'](170, 170, 170);
+		Ym['OutdoorAmbient'] = Color3['fromRGB'](170, 170, 170);
+		Ym['ColorShift_Bottom'] = Color3['new'](0, 0, 0);
+		Ym['ColorShift_Top'] = Color3['new'](0, 0, 0);
+		Ym['Brightness'] = 1.8999999999999999;
+		Ym['ClockTime'] = 12;
+		Ym['GlobalShadows'] = false;
+		Ym['FogStart'] = 9000000000;
+		Ym['FogEnd'] = 9000000000
+		for Fj, wj in ipairs(Ym['GetDescendants'](Ym)) do
+			if wj['IsA'](wj, 'Atmosphere') or wj['IsA'](wj, 'Sky') then
+				pcall(function()
+					wj['Destroy'](wj)
+				end)
+			elseif wj['IsA'](wj, 'PostEffect') or wj['IsA'](wj, 'Clouds') then
+				pcall(function()
+					wj['Enabled'] = false
+				end)
+			end
+		end
+	end
+});
+Xb['Space'](Xb);
+Xb['Button'](Xb, {
+	Title = 'Potato Mode',
+	Icon = 'lucide:cpu',
+	Justify = 'Center',
+	Color = Color3['fromRGB'](255, 159, 50),
+	Callback = function()
+		Vc['Notify'](Vc, {
+			Title = 'Potato Mode',
+			Content = 'Mengoptimalkan map untuk HP kentang... Jangan tutup game!',
+			Icon = 'lucide:hourglass'
+		});
+		task['spawn'](function()
+			Ym['GlobalShadows'] = false;
+			Ym['ShadowSoftness'] = 0;
+			Ym['FogEnd'] = 9000000000;
+			Ym['EnvironmentDiffuseScale'] = 0;
+			Ym['EnvironmentSpecularScale'] = 0
+			for zo, Ia in ipairs(Ym['GetDescendants'](Ym)) do
+				if Ia['IsA'](Ia, 'PostEffect') or Ia['IsA'](Ia, 'Atmosphere') or Ia['IsA'](Ia, 'Clouds') then
+					pcall(function()
+						Ia['Enabled'] = false
+					end)
+				end
+			end
+			local Bq = workspace['Terrain']
+			if not (Bq) then
+			else
+				pcall(function()
+					Bq['WaterWaveSize'] = 0;
+					Bq['WaterWaveSpeed'] = 0;
+					Bq['WaterReflectance'] = 0;
+					Bq['WaterTransparency'] = 0;
+					Bq['Decoration'] = false
+				end)
+			end
+			local mq = workspace['GetDescendants'](workspace)
+			local eh = # mq
+			for ye = 103, (eh) + 102 do
+				local cm = mq[(ye - 102)]
+				if not (cm['IsA'](cm, 'BasePart') or cm['IsA'](cm, 'Decal') or cm['IsA'](cm, 'Texture') or cm['IsA'](cm, 'SurfaceAppearance') or cm['IsA'](cm, 'PostEffect') or cm['IsA'](cm, 'ParticleEmitter')) then
+				else
+					pcall(function()
+						if not (cm['IsA'](cm, 'BasePart')) then
+							if not (cm['IsA'](cm, 'Decal') or cm['IsA'](cm, 'Texture') or cm['IsA'](cm, 'SurfaceAppearance')) then
+								cm['Enabled'] = false
+							else
+								cm['Destroy'](cm)
+							end
+						else
+							cm['Material'] = Enum['Material']['SmoothPlastic'];
+							cm['Reflectance'] = 0;
+							cm['CastShadow'] = false
+						end
+					end)
+				end
+				if (ye - 102) % 200 == 0 then
+					task['wait'](0.029999999999999999)
+				end
+			end
+			Vc['Notify'](Vc, {
+				Title = 'Optimization Complete!',
+				Content = 'Potato Mode berhasil diterapkan. Tekstur dihapus, FPS Boosted!',
+				Icon = 'lucide:check-circle'
+			})
+		end)
+	end
+});
+Ok['Section'](Ok, {
+	Title = 'Targeting System'
+});
+Ok['Toggle'](Ok, {
+	Title = 'Enable Aimbot',
+	Desc = 'Locks onto the target.',
+	Flag = 'F_Aimbot',
+	Value = false,
+	Callback = function(Va)
+		x = Va
+	end
+});
+Ok['Dropdown'](Ok, {
+	Title = 'Aimbot Target Part',
+	Desc = 'Pilih bagian tubuh yang ingin dikunci.',
+	Values = {
+		'Head',
+		'Torso',
+		'Body (RootPart)'
+	},
+	Value = 'Torso',
+	Flag = 'F_AimPart',
+	Callback = function(Jg)
+		getgenv()['AimbotPart'] = Jg
+	end
+});
+Ok['Dropdown'](Ok, {
+	Title = 'Aimbot Trigger Mode',
+	Desc = "Pilih \'Auto Lock\' mode.",
+	Values = {
+		'Hold to Lock',
+		'Auto Lock (Always)'
+	},
+	Value = 'Hold to Lock',
+	Flag = 'F_AimTrigger',
+	Callback = function(Ch)
+		getgenv()['AimbotTrigger'] = Ch
+	end
+});
+Ok['Slider'](Ok, {
+	Title = 'Aim Radius',
+	Step = 5,
+	IsTooltip = true,
+	IsTextbox = true,
+	Flag = 'F_AimRadius',
+	Value = {
+		Min = 30,
+		Max = 150,
+		Default = 55
+	},
+	Callback = function(cd)
+		local Tl = type(cd) == 'table' and (tonumber(cd['Value']) or 55) or tonumber(cd) or 55;
+		ml = Tl
+		if xd then
+			xd['Size'] = UDim2['new'](0, Tl * 2, 0, Tl * 2)
+		end
+	end
+});
+Ok['Toggle'](Ok, {
+	Title = 'Show Aim Circle',
+	Desc = 'Displays aim radius on screen.',
+	Flag = 'F_ShowFOV',
+	Value = false,
+	Callback = function(Ik)
+		lo_ = Ik
+		if xd then
+			xd['Visible'] = Ik
+		end
+	end
+});
+Ok['Space'](Ok, {
+	Columns = 1
+});
+Ok['Section'](Ok, {
+	Title = 'Auto Attack (Killer Only)'
+});
+Ok['Toggle'](Ok, {
+	Title = 'Enable Auto Attack',
+	Desc = 'Automatically attacks the nearest Survivor.',
+	Flag = 'F_AutoAttack',
+	Value = false,
+	Callback = function(Af)
+		ed = Af
+	end
+});
+Ok['Slider'](Ok, {
+	Title = 'Attack Range (Studs)',
+	Step = 1,
+	IsTooltip = true,
+	Flag = 'F_AttackRange',
+	Value = {
+		Min = 5,
+		Max = 25,
+		Default = 10
+	},
+	Callback = function(Zb)
+		Nh = type(Zb) == 'table' and (tonumber(Zb['Value']) or 10) or tonumber(Zb) or 10
+	end
+});
+Ok['Section'](Ok, {
+	Title = 'Killer Hitbox Modification'
+});
+Ok['Toggle'](Ok, {
+	Title = 'Expand Killer Hitbox',
+	Desc = 'Memperbesar ukuran Killer agar mudah di-Stun.',
+	Flag = 'F_HitboxKiller',
+	Value = false,
+	Callback = function(ti)
+		Rd = ti
+		if not (not ti) then
+		else
+			for lb, pg in ipairs(ia['GetPlayers'](ia)) do
+				if not (pg ~= He and pg['Character'] and pg['Character']['FindFirstChild'](pg['Character'], 'HumanoidRootPart')) then
+				else
+					local Qk = pg['Team'] and pg['Team']['Name']['lower'](pg['Team']['Name']) or ''
+					if not (Qk['find'](Qk, 'killer')) then
+					else
+						local jm = pg['Character']['HumanoidRootPart'];
+						jm['Size'] = Zk(2, 2, 1);
+						jm['Transparency'] = 1;
+						jm['Massless'] = false
+					end
+				end
+			end
+		end
+	end
+});
+Ok['Slider'](Ok, {
+	Title = 'Hitbox Size',
+	Step = 1,
+	IsTooltip = true,
+	Flag = 'F_HitboxSize',
+	Value = {
+		Min = 2,
+		Max = 50,
+		Default = 15
+	},
+	Callback = function(Yo)
+		Qo = type(Yo) == 'table' and (tonumber(Yo['Value']) or 15) or tonumber(Yo) or 15
+	end
+});
+ec['Section'](ec, {
+	Title = 'Generator Logic'
+});
+ec['Toggle'](ec, {
+	Title = 'Auto Generator',
+	Desc = 'Secara otomatis menyelesaikan SkillCheck saat memperbaiki.',
+	Flag = 'F_AutoGen',
+	Value = false,
+	Callback = function(ka)
+		Tn = ka
+	end
+});
+ec['Dropdown'](ec, {
+	Title = 'SkillCheck Mode',
+	Desc = 'Perfect (Bonus Progress), Neutral (Normal/Aman).',
+	Values = {
+		'Perfect',
+		'Neutral'
+	},
+	Value = 'Perfect',
+	Flag = 'F_GenMode',
+	Callback = function(Vl)
+		eo = Vl
+	end
+});
+ec['Keybind'](ec, {
+	Title = 'Boost Gen Hotkey (PC Only)',
+	Desc = 'Pilih tombol keyboard untuk memicu Boost All Gen dari jarak jauh.',
+	Icon = 'lucide:keyboard',
+	Default = 'B',
+	Callback = function()
+		ok()
+	end
+});
+ec['Button'](ec, {
+	Title = 'Boost All Gen (Group Project)',
+	Desc = 'Menyuntikkan efek perk Group Project ke semua Generator secara instan!',
+	Icon = 'lucide:zap',
+	Color = Color3['fromRGB'](0, 200, 100),
+	Callback = function()
+		ok()
+	end
+});
+ec['Space'](ec, {
+	Columns = 2
+});
+ec['Section'](ec, {
+	Title = 'Utilities',
+	Box = true
+});
+ec['Toggle'](ec, {
+	Title = 'Self UnHook (Safe Mode)',
+	Desc = 'Turun dari tiang dengan aman (Membajak remote penyelamatan tanpa mengurangi HP tiang).',
+	Flag = 'F_AutoUnhook',
+	Locked = true,
+	LockedTitle = 'Maintenance',
+	Value = false,
+	Callback = function(ha)
+		fj = ha
+	end
+});
+pf['Section'](pf, {
+	Title = 'Client-Sided (Visual Only)',
+	Justify = 'Center'
+});
+pf['Input'](pf, {
+	Title = 'Custom Gears',
+	Desc = 'Masukkan jumlah Gears.',
+	PlaceholderText = 'Jumlah Gears...',
+	Callback = function(xf)
+		cn['Gears'] = tonumber(xf) or 0
+	end
+});
+pf['Input'](pf, {
+	Title = 'Custom Screws',
+	Desc = 'Masukkan jumlah Screws.',
+	PlaceholderText = 'Jumlah Screws...',
+	Callback = function(Gn)
+		cn['Screws'] = tonumber(Gn) or 0
+	end
+});
+pf['Input'](pf, {
+	Title = 'Custom Level',
+	Desc = 'Masukkan angka Level.',
+	PlaceholderText = 'Angka Level...',
+	Callback = function(Vp)
+		cn['Level'] = tonumber(Vp) or 0
+	end
+});
+pf['Space'](pf, {
+	Columns = 2
+});
+pf['Button'](pf, {
+	Title = 'Apply Spoof Data',
+	Icon = 'lucide:scan-face',
+	Justify = 'Center',
+	Color = Color3['fromRGB'](0, 255, 150),
+	Callback = function()
+		local qa = game['Players']['LocalPlayer']
+		if not qa then
+			return
+		end
+		local function Un(on, qe)
+			if not qe or qe <= 0 then
+				return
+			end
+			local je, Bj = string['lower'](on), 0;
+			pcall(function()
+				qa['SetAttribute'](qa, on, qe)
+			end);
+			pcall(function()
+				qa['SetAttribute'](qa, on .. 's', qe)
+			end)
+			for Xe, Ci in ipairs(qa['GetDescendants'](qa)) do
+				if not (Ci['IsA'](Ci, 'IntValue') or Ci['IsA'](Ci, 'NumberValue') or Ci['IsA'](Ci, 'StringValue')) then
+				else
+					local sn = string['lower'](Ci['Name'])
+					if not (string['find'](sn, je)) then
+					else
+						if Ci['IsA'](Ci, 'StringValue') then
+							pcall(function()
+								Ci['Value'] = tostring(qe)
+							end)
+						else
+							pcall(function()
+								Ci['Value'] = qe
+							end)
+						end
+						Bj = Bj + 1
+					end
+				end
+			end
+			local da = qa['FindFirstChild'](qa, 'PlayerGui')
+			if not (da) then
+			else
+				for To, _f in ipairs(da['GetDescendants'](da)) do
+					if not (_f['IsA'](_f, 'TextLabel') or _f['IsA'](_f, 'TextButton')) then
+					else
+						local Lq = string['lower'](_f['Name'])
+						if not (string['find'](Lq, je) and (string['find'](Lq, 'amount') or string['find'](Lq, 'count') or string['find'](Lq, 'text') or Lq == je)) then
+						else
+							pcall(function()
+								_f['Text'] = tostring(qe)
+							end)
+						end
+					end
+				end
+			end
+		end
+		Un('Gear', cn['Gears']);
+		Un('Screw', cn['Screws']);
+		Un('Level', cn['Level']);
+		Vc['Notify'](Vc, {
+			Title = 'Spoof Applied!',
+			Content = 'Data berhasil dimanipulasi secara visual! Coba cek UI profilmu.',
+			Icon = 'lucide:check-circle'
+		})
+	end
+})
+local Dl, _k = Dq['ConfigManager'], {};
+pcall(function()
+	for hc, yf in pairs(Vc['Themes']) do
+		Bp(_k, hc)
+	end
+end);
+rj['Section'](rj, {
+	Title = 'Configuration System'
+});
+rj['Space'](rj, {
+	Columns = 2
+})
+local Ih = rj['Group'](rj, {});
+Ih['Button'](Ih, {
+	Title = 'Save Config',
+	Justify = 'Center',
+	Icon = 'lucide:save',
+	Callback = function()
+		local Aq, Ac = pcall(function()
+			Dq['CurrentConfig'] = Dl['Config'](Dl, 'Melonz Hub');
+			Dq['CurrentConfig']['Save'](Dq['CurrentConfig'])
+		end)
+		if Aq then
+			Vc['Notify'](Vc, {
+				Title = 'Config Saved',
+				Content = 'Semua pengaturan berhasil disimpan.',
+				Icon = 'lucide:check-circle'
+			})
+		else
+			Vc['Notify'](Vc, {
+				Title = 'Save Failed',
+				Content = 'Executor kamu tidak mendukung penyimpanan.',
+				Icon = 'lucide:x-circle'
+			})
+		end
+	end
+});
+Ih['Button'](Ih, {
+	Title = 'Load Config',
+	Justify = 'Center',
+	Icon = 'lucide:folder-open',
+	Callback = function()
+		local Qg, ol = pcall(function()
+			Dq['CurrentConfig'] = Dl['CreateConfig'](Dl, 'Melonz Hub');
+			Dq['CurrentConfig']['Load'](Dq['CurrentConfig'])
+		end)
+		if not (Qg) then
+			Vc['Notify'](Vc, {
+				Title = 'Load Failed',
+				Content = 'Tidak ada config yang ditemukan.',
+				Icon = 'lucide:x-circle'
+			})
+		else
+			Vc['Notify'](Vc, {
+				Title = 'Config Loaded',
+				Content = 'Pengaturan berhasil dimuat.',
+				Icon = 'lucide:check-circle'
+			})
+		end
+	end
+});
+rj['Space'](rj, {
+	Columns = 1
+});
+rj['Section'](rj, {
+	Title = 'Security & Protection'
+});
+rj['Toggle'](rj, {
+	Title = 'Anti-Logger (Bypass Anti-Cheat)',
+	Desc = 'Memblokir pengiriman laporan error atau cheat dari client ke server game.',
+	Flag = 'F_AntiLogger',
+	Value = true,
+	Callback = function(vb)
+		Kk = vb
+	end
+});
+rj['Space'](rj);
+rj['Section'](rj, {
+	Title = 'Window & Interface'
+});
+rj['Dropdown'](rj, {
+	Title = 'Select Theme',
+	Desc = 'Pilih tema warna antarmuka Melonz Hub.',
+	Flag = 'F_Theme',
+	Value = 'Melonz',
+	Values = _k,
+	Callback = function(cg)
+		pcall(function()
+			Vc['SetTheme'](Vc, cg)
+		end)
+	end
+});
+rj['Space'](rj);
+rj['Button'](rj, {
+	Title = 'Unload Melonz Hub',
+	Desc = 'Membatalkan semua fungsi, menghapus UI, dan membersihkan layar.',
+	Icon = 'lucide:power',
+	Color = Color3['fromHex']'#E74C3C',
+	Justify = 'Left',
+	Callback = function()
+		getgenv()['MELONZ_RUNNING'] = false;
+		pcall(function()
+			Dq['Destroy'](Dq)
+		end);
+		pcall(function()
+			jj['UnbindFromRenderStep'](jj, 'SmoothFOV')
+		end)
+		if not (getgenv()['MELONZ_CONNECTIONS']) then
+		else
+			for ca, Vk in ipairs(getgenv()['MELONZ_CONNECTIONS']) do
+				if not (Vk['Disconnect']) then
+				else
+					Vk['Disconnect'](Vk)
+				end
+			end
+			table['clear'](getgenv()['MELONZ_CONNECTIONS'])
+		end
+		if CrosshairGui then
+			CrosshairGui['Destroy'](CrosshairGui);
+			CrosshairGui = nil
+		end
+		if not (bp) then
+		else
+			bp['Destroy'](bp);
+			bp = nil
+		end
+		if not (K) then
+		else
+			K['Destroy'](K);
+			K = nil
+		end
+		for ri, qq in ipairs(ia['GetPlayers'](ia)) do
+			if not (qq['Character']) then
+			else
+				local si = qq['Character']['FindFirstChild'](qq['Character'], 'H')
+				if si then
+					si['Destroy'](si)
+				end
+				local Ue = qq['Character']['FindFirstChild'](qq['Character'], 'HumanoidRootPart')
+				if not (Ue) then
+				else
+					local ck = Ue['FindFirstChild'](Ue, 'TagESP')
+					if not (ck) then
+					else
+						ck['Destroy'](ck)
+					end
+				end
+			end
+		end
+		if nc then
+			for kn, Ek in pairs(nc) do
+				for Tb, ga in ipairs(Ek) do
+					local tn = ga['FindFirstChild'](ga, 'H')
+					if not (tn) then
+					else
+						tn['Destroy'](tn)
+					end
+				end
+			end
+		end
+	end
+})
+local vk = na['TouchEnabled'] and not na['KeyboardEnabled']
+if vk then
+	local Wb, Zd = pcall(function()
+		return Uc(game['GetService'](game, 'CoreGui'))
+	end)
+	local M = Wb and Zd or xq
+	local Cp = M['FindFirstChild'](M, 'Melonz_MobileButtons') or Instance['new']'ScreenGui';
+	Cp['Name'] = 'Melonz_MobileButtons';
+	Cp['ResetOnSpawn'] = false;
+	Cp['IgnoreGuiInset'] = true;
+	Cp['Parent'] = M;
+	Be = Cp['FindFirstChild'](Cp, 'RotateBtn') or Instance['new']'TextButton';
+	Be['Name'] = 'RotateBtn';
+	Be['Size'] = UDim2['new'](0, 65, 0, 65);
+	Be['Position'] = UDim2['new'](1, - 85, 0.5, 30);
+	Be['BackgroundColor3'] = Color3['fromRGB'](30, 30, 35);
+	Be['BackgroundTransparency'] = 0.14999999999999999;
+	Be['AutoButtonColor'] = false;
+	Be['Text'] = 'TPP';
+	Be['TextColor3'] = Color3['new'](1, 1, 1);
+	Be['Font'] = Enum['Font']['GothamBlack'];
+	Be['TextSize'] = 16;
+	Be['Visible'] = false;
+	Be['Parent'] = Cp
+	for Od, ql in ipairs(Be['GetChildren'](Be)) do
+		ql['Destroy'](ql)
+	end
+	local ua = Instance['new']('UICorner', Be);
+	ua['CornerRadius'] = UDim['new'](1, 0)
+	local be = Instance['new']('UIStroke', Be);
+	be['Thickness'] = 2.5;
+	be['Color'] = Color3['fromRGB'](75, 150, 255)
+	local fq = Instance['new']('UIGradient', Be);
+	fq['Color'] = ColorSequence['new']{
+		ColorSequenceKeypoint['new'](0, Color3['fromRGB'](255, 255, 255)),
+		ColorSequenceKeypoint['new'](1, Color3['fromRGB'](150, 150, 150))
+	};
+	fq['Rotation'] = 45;
+	Be['InputBegan']['Connect'](Be['InputBegan'], function(Zf)
+		if not (Zf['UserInputType'] == Enum['UserInputType']['MouseButton1'] or Zf['UserInputType'] == Enum['UserInputType']['Touch']) then
+		else
+			Be['Size'] = UDim2['new'](0, 58, 0, 58)
+		end
+	end);
+	Be['InputEnded']['Connect'](Be['InputEnded'], function(jk)
+		if jk['UserInputType'] == Enum['UserInputType']['MouseButton1'] or jk['UserInputType'] == Enum['UserInputType']['Touch'] then
+			Be['Size'] = UDim2['new'](0, 65, 0, 65);
+			am = not am;
+			Lg(am);
+			be['Color'] = am and Color3['fromRGB'](255, 100, 50) or Color3['fromRGB'](75, 150, 255);
+			Be['Text'] = am and 'FPP' or 'TPP'
+		end
+	end)
+end
+local zl;
+zl = hookmetamethod(game, '__namecall', function(Ca, ...)
+	local en_ = getnamecallmethod()
+	if checkcaller() or en_ ~= 'FireServer' or typeof(Ca) ~= 'Instance' then
+		return zl(Ca, ...)
+	end
+	local Ed, oo = {
+		...
+	}, tostring(Ca)['lower'](tostring(Ca))
+	if not (Tn and oo['find'](oo, 'skillcheck')) then
+	else
+		if Ed[# Ed] == 'MELONZ_IGNORE' then
+			table['remove'](Ed, # Ed)
+			return zl(Ca, unpack(Ed))
+		end
+		local uo, Id, aq = nil, nil, false
+		for Ne, pm in ipairs(Ed) do
+			if type(pm) == 'string' then
+				local te = pm['lower'](pm)
+				if not (te == 'fail' or te == 'failed' or te == 'success' or te == 'neutral') then
+				else
+					uo = Ne
+				end
+			elseif type(pm) == 'number' then
+				Id = Ne
+			elseif typeof(pm) == 'Instance' and pm['IsA'](pm, 'Model') and pm['FindFirstChild'](pm, 'Humanoid') then
+				aq = true
+			end
+		end
+		local vo = eo == 'Perfect';
+		Ed[uo or 1] = vo and 'success' or 'neutral'
+		local Le = aq and 60 or 1
+		if Id then
+			Ed[Id] = vo and Le or 0
+		else
+			table['insert'](Ed, vo and Le or 0)
+		end
+		if not (vo) then
+		else
+			local ce = table['clone'](Ed);
+			table['insert'](ce, 'MELONZ_IGNORE');
+			task['spawn'](function()
+				local Hd = He['Character'] and He['Character']['FindFirstChildOfClass'](He['Character'], 'Humanoid')
+				for Rh = 133, (10) + 132 do
+					if not (Hd and Hd['MoveDirection']['Magnitude'] > 0.10000000000000001) then
+					else
+						break
+					end
+					pcall(zl, Ca, unpack(ce));
+					task['wait'](0.029999999999999999)
+				end
+			end)
+		end
+		return zl(Ca, unpack(Ed))
+	end
+	if not (oo['find'](oo, 'healevent') or oo['find'](oo, 'requestheal')) then
+	else
+		return zl(Ca, ...)
+	end
+	if Wl and (oo['find'](oo, 'breakgen') or oo['find'](oo, 'damage') or oo['find'](oo, 'kick')) then
+		local Xk = He['Team']
+		if Xk and Xk['Name']['lower'](Xk['Name'])['find'](Xk['Name']['lower'](Xk['Name']), 'killer') then
+			local Dg = table['clone'](Ed);
+			task['spawn'](function()
+				for zq = 115, (8) + 114 do
+					pcall(zl, Ca, unpack(Dg));
+					task['wait'](0.025000000000000001)
+				end
+			end);
+			pcall(function()
+				Vc['Notify'](Vc, {
+					Title = 'Double Damage',
+					Content = 'Multiplier active.',
+					Icon = 'lucide:swords'
+				})
+			end)
+		end
+	end
+	if sk then
+		local Qh = {
+			'noise',
+			'scream',
+			'vaultalert',
+			'spotted',
+			'alert',
+			'ping',
+			'loud',
+			'notify',
+			'notification',
+			'sound'
+		}
+		for fc, jq in ipairs(Qh) do
+			if oo['find'](oo, jq) or (type(Ed[1]) == 'string' and Ed[1]['lower'](Ed[1])['find'](Ed[1]['lower'](Ed[1]), jq)) then
+				return
+			end
+		end
+	end
+	if Kk and (oo['find'](oo, 'log') or oo['find'](oo, 'error') or oo['find'](oo, 'report') or oo['find'](oo, 'anticheat') or oo['find'](oo, 'ban')) then
+		return
+	end
+	if oo['find'](oo, 'spear') or oo['find'](oo, 'throw') or oo['find'](oo, 'visualize') then
+		local gd = He['Team']
+		if gd and gd['Name']['lower'](gd['Name'])['find'](gd['Name']['lower'](gd['Name']), 'killer') then
+			local tj = false
+			if kf and typeof(Og) == 'function' then
+				local xc, fr = Og(), He['Character'] and He['Character']['FindFirstChild'](He['Character'], 'HumanoidRootPart')
+				if not (xc and fr) then
+				else
+					local ih = xc['Position'] + ((xc['AssemblyLinearVelocity'] or Vector3['zero']) * 0.089999999999999997)
+					local H = (ih - fr['Position'])['Unit']
+					for La, Hq in ipairs(Ed) do
+						if not (typeof(Hq) == 'Vector3') then
+						else
+							Ed[La] = H * 150;
+							tj = true
+							break
+						end
+					end
+				end
+			end
+			if not (ae) then
+			else
+				for fp, re_ in ipairs(Ed) do
+					if not (typeof(re_) == 'Vector3') then
+						if typeof(re_) == 'CFrame' then
+							local pl = re_['LookVector'];
+							Ed[fp] = CFrame['lookAt'](re_['Position'], re_['Position'] + (Vector3['new'](pl['X'], 0, pl['Z'])['Unit'] * 100));
+							tj = true
+						elseif type(re_) == 'number' then
+							if not (re_ > 0 and re_ < 12) then
+								if re_ >= 12 and re_ <= 120 then
+									Ed[fp] = math['clamp'](re_ * 1.1000000000000001, 20, 180);
+									tj = true
+								end
+							else
+								Ed[fp] = 0;
+								tj = true
+							end
+						end
+					else
+						local Uh = re_['Magnitude'];
+						Ed[fp] = re_['Unit'] * math['clamp'](Uh, 80, 220);
+						tj = true
+					end
+				end
+			end
+			if not (tj) then
+			else
+				return zl(Ca, unpack(Ed))
+			end
+		end
+	end
+	if cr and (oo['find'](oo, 'falldamage') or oo['find'](oo, 'fall') or oo['find'](oo, 'ragdollfall')) then
+		return
+	end
+	if getgenv()['AntiAura'] then
+		getgenv()['AuraRemoteCache'] = getgenv()['AuraRemoteCache'] or {}
+		local Of, Vn = getgenv()['AuraRemoteCache'], tostring(Ca)
+		if Of[Vn] == nil then
+			local la, Wq = 0, {
+				'aura',
+				'reveal',
+				'highlight',
+				'sense',
+				'spotted',
+				'vision',
+				'radar',
+				'detect',
+				'tracking',
+				'hunter'
+			}
+			for Xq, Oa in ipairs(Wq) do
+				if oo['find'](oo, Oa) then
+					la += 2
+				end
+			end
+			local Rg = false
+			for R = 232, (math['min'](3, # Ed)) + 231 do
+				if not (Ed[(R - 231)] == He or Ed[(R - 231)] == He['Character']) then
+				else
+					Rg = true
+					break
+				end
+			end
+			Of[Vn] = la >= 4 and Rg
+		end
+		if not (Of[Vn]) then
+		else
+			return
+		end
+	end
+	if dd and (oo['find'](oo, 'twist of fate') or oo['find'](oo, 'visualizebullet') or oo['find'](oo, '.fire')) then
+		local dh = He['Team']
+		local Ao = not (dh and dh['Name']['lower'](dh['Name'])['find'](dh['Name']['lower'](dh['Name']), 'killer'))
+		if Ao then
+			local an_, Pm, Fl, _a = workspace['CurrentCamera'], na['GetMouseLocation'](na), nil, (getgenv()['SilentAimFOV'] or 180)
+			for fn, Yn in ipairs(ia['GetPlayers'](ia)) do
+				if Yn ~= He and Yn['Team'] and Yn['Team']['Name']['lower'](Yn['Team']['Name'])['find'](Yn['Team']['Name']['lower'](Yn['Team']['Name']), 'killer') and Yn['Character'] then
+					local D, zc = Yn['Character']['FindFirstChild'](Yn['Character'], 'HumanoidRootPart'), Yn['Character']['FindFirstChildOfClass'](Yn['Character'], 'Humanoid')
+					if D and zc and zc['Health'] > 0 then
+						local W, T = an_['WorldToViewportPoint'](an_, D['Position'])
+						if not (T) then
+						else
+							local Fb = (Vector2['new'](W['X'], W['Y']) - Pm)['Magnitude']
+							if not (Fb < _a) then
+							else
+								_a = Fb;
+								Fl = D
+							end
+						end
+					end
+				end
+			end
+			if Fl then
+				local Om = He['Character']
+				local Yf = Om and Om['FindFirstChild'](Om, 'HumanoidRootPart')
+				if Yf then
+					local sh = Fl['AssemblyLinearVelocity'] or Vector3['zero']
+					local wb = sh['Magnitude']
+					if not (wb > 45) then
+					else
+						sh = sh['Unit'] * 45
+					end
+					local Sd = 0.080000000000000002;
+					pcall(function()
+						Sd = game['GetService'](game, 'Stats')['Network']['ServerStatsItem']['Data Ping']['GetValue'](game['GetService'](game, 'Stats')['Network']['ServerStatsItem']['Data Ping']) / 1000
+					end);
+					Sd = math['clamp'](Sd, 0.050000000000000003, 0.17999999999999999)
+					local th_ = 0.10000000000000001 + Sd + (wb / 350)
+					local Tg = Fl['Position'] + (sh * th_)
+					local ag = (Tg - Yf['Position'])['Unit']
+					for bq = 99, (# Ed) + 98 do
+						local Qe = Ed[(bq - 98)]
+						if not (typeof(Qe) == 'Vector3') then
+							if typeof(Qe) == 'CFrame' then
+								Ed[(bq - 98)] = CFrame['new'](Yf['Position'], Tg)
+							elseif typeof(Qe) == 'Instance' and Qe['IsA'](Qe, 'Tool') then
+								Ed[(bq - 98)] = Qe
+							end
+						else
+							Ed[(bq - 98)] = ag
+						end
+					end
+					task['spawn'](function()
+						local xg = Kl['Remotes']['Items']['Twist of Fate']['FindFirstChild'](Kl['Remotes']['Items']['Twist of Fate'], 'VisualizeBullet')
+						if xg then
+							pcall(function()
+								xg['FireServer'](xg, Tg, ag)
+							end)
+						end
+					end)
+					return zl(Ca, unpack(Ed))
+				end
+			end
+		end
+	end
+	return zl(Ca, ...)
+end)
+local z, rn = {}, 0;
+task['spawn'](function()
+	while task['wait'](0.080000000000000002) do
+		if not (not getgenv()['MELONZ_RUNNING']) then
+		else
+			break
+		end
+		if not (not Tn) then
+		else
+			continue
+		end
+		pcall(function()
+			local pq = He['Character']
+			local Gi, sg = pq and pq['FindFirstChildOfClass'](pq, 'Humanoid'), pq and pq['FindFirstChild'](pq, 'HumanoidRootPart')
+			if not (not pq or not Gi or not sg or Gi['Health'] <= 0) then
+			else
+				return
+			end
+			if not (not z['Skill'] or not z['Skill']['Parent']) then
+			else
+				z['Skill'] = Kl['Remotes']['Generator']['FindFirstChild'](Kl['Remotes']['Generator'], 'SkillCheckResultEvent')
+			end
+			if not (not z['Repair'] or not z['Repair']['Parent']) then
+			else
+				z['Repair'] = Kl['Remotes']['Generator']['FindFirstChild'](Kl['Remotes']['Generator'], 'RepairEvent')
+			end
+			local Gf, hh = z['Skill'], z['Repair']
+			if not (not Gf or not hh) then
+			else
+				return
+			end
+			local Cc, N = false, false
+			for tq, Xm in ipairs(Gi['GetPlayingAnimationTracks'](Gi)) do
+				local Ec = Xm['Animation']
+				local Go = Ec and Ec['Name']['lower'](Ec['Name']) or ''
+				if Go['find'](Go, 'heal') or Go['find'](Go, 'revive') or Go['find'](Go, 'med') then
+					Cc = true
+				elseif Go['find'](Go, 'repair') or Go['find'](Go, 'generator') or Go['find'](Go, 'fix') then
+					N = true
+				end
+			end
+			local function Yd(wg)
+				return wg == true or (type(wg) == 'number' and wg > 0)
+			end
+			Cc = Cc or Yd(ge(pq, 'Healing')) or Yd(ge(pq, 'Reviving'));
+			N = N or Yd(ge(pq, 'Repair')) or Yd(ge(pq, 'IsRepairing'))
+			if not (Gi['MoveDirection']['Magnitude'] > 0.14999999999999999) then
+			else
+				N = false
+			end
+			if not (not Cc and not N) then
+			else
+				return
+			end
+			local lf = He['FindFirstChildOfClass'](He, 'PlayerGui')
+			if not (lf) then
+			else
+				for Yl, po in ipairs(lf['GetChildren'](lf)) do
+					if po['IsA'](po, 'ScreenGui') then
+						local ao = po['Name']['lower'](po['Name'])
+						if not (ao['find'](ao, 'skill') or ao['find'](ao, 'qte')) then
+						else
+							po['Enabled'] = false
+						end
+					end
+				end
+			end
+			if tick() - rn < 0.089999999999999997 then
+				return
+			end
+			rn = tick()
+			if not (Cc) then
+			else
+				Gf['FireServer'](Gf, 'success', 1)
+				return
+			end
+			local Gb, ko = nil, nil
+			for Rf, Mq in ipairs(workspace['Map']['GetDescendants'](workspace['Map'])) do
+				if not (Mq['IsA'](Mq, 'Model')) then
+				else
+					local hj = ge(Mq, 'RepairProgress') or ge(Mq, 'Progress')
+					if hj and hj >= 0 and hj < 100 then
+						for jp, u_ in ipairs(Mq['GetChildren'](Mq)) do
+							if not (u_['Name']['find'](u_['Name'], 'Point')) then
+							else
+								Gb = Mq;
+								ko = u_
+								break
+							end
+						end
+					end
+				end
+				if not (ko) then
+				else
+					break
+				end
+			end
+			if not (not Gb or not ko) then
+			else
+				return
+			end
+			hh['FireServer'](hh, ko, true)
+			local hi, ea = eo == 'Perfect' and 'success' or 'neutral', eo == 'Perfect' and 1 or 0;
+			Gf['FireServer'](Gf, hi, ea, Gb, ko)
+			if not (eo == 'Perfect') then
+			else
+				task['spawn'](function()
+					for Qc = 160, (2) + 159 do
+						if not (Gi['MoveDirection']['Magnitude'] > 0.14999999999999999) then
+						else
+							break
+						end
+						pcall(function()
+							Gf['FireServer'](Gf, 'success', 1, Gb, ko)
+						end);
+						task['wait'](0.025000000000000001)
+					end
+				end)
+			end
+			if not (not na['TouchEnabled'] and lk) then
+			else
+				lk['SendKeyEvent'](lk, true, Enum['KeyCode']['Space'], false, game);
+				lk['SendKeyEvent'](lk, false, Enum['KeyCode']['Space'], false, game)
+			end
+		end)
+	end
+end)
+local Ya, yi, Ri = nil, false, 0;
+task['spawn'](function()
+	while task['wait'](0.14999999999999999) do
+		if not (not getgenv()['MELONZ_RUNNING']) then
+		else
+			break
+		end
+		if not ed then
+			continue
+		end
+		local Jo = He['Character']
+		local xp, Oi = Jo and Jo['FindFirstChild'](Jo, 'HumanoidRootPart'), Jo and Jo['FindFirstChild'](Jo, 'Humanoid')
+		if not (not xp or not Oi or Oi['Health'] <= 0) then
+		else
+			continue
+		end
+		local xh = He['Team'] and He['Team']['Name']['lower'](He['Team']['Name']) or ''
+		if not (not xh['find'](xh, 'killer')) then
+		else
+			continue
+		end
+		local Dp, Rm = ge(Jo, 'Carrying') or ge(Jo, 'IsCarrying'), ge(Jo, 'Stunned')
+		if Dp or Rm then
+			continue
+		end
+		local J, qc = false, ia['GetPlayers'](ia)
+		for Wh = 10, (# qc) + 9 do
+			local j = qc[(Wh - 9)]
+			if j ~= He and j['Character'] and j['Character']['FindFirstChild'](j['Character'], 'HumanoidRootPart') then
+				local Hk = j['Team'] and j['Team']['Name']['lower'](j['Team']['Name']) or ''
+				if not Hk['find'](Hk, 'killer') then
+					local ro = j['Character']
+					local uc = ro['FindFirstChild'](ro, 'Humanoid')
+					if uc and uc['Health'] > 0 then
+						local ld, ap = ge(ro, 'Knocked'), ge(ro, 'IsHooked')
+						if not ld and not ap then
+							local Nl, fm = (ro['HumanoidRootPart']['Position'] - xp['Position'])['Magnitude'], uc['MoveDirection']['Magnitude'] > 0
+							local Wo = fm and (Nh + 3) or Nh
+							if Nl <= Wo then
+								J = true
+								break
+							end
+						end
+					end
+				end
+			end
+		end
+		local de = os['clock']()
+		if J and (de - Ri > 0.59999999999999998) then
+			Ri = de
+			if not yi then
+				local Dj = Kl['FindFirstChild'](Kl, 'Remotes')
+				local mk = Dj and (Dj['FindFirstChild'](Dj, 'Attacks') or Dj['FindFirstChild'](Dj, 'attacks') or Dj['FindFirstChild'](Dj, 'Attack'))
+				if not (mk) then
+				else
+					Ya = mk['FindFirstChild'](mk, 'BasicAttack') or mk['FindFirstChild'](mk, 'basicattack')
+				end
+				yi = true
+			end
+			if Ya then
+				Ya['FireServer'](Ya, false);
+				task['wait'](0.050000000000000003);
+				Ya['FireServer'](Ya, true)
+			end
+		end
+	end
+end)
+local Ti
+local tl, Ua, sf = 0, {
+	'Veil',
+	'Masked',
+	'Stalker',
+	'Invisible',
+	'Ghost',
+	'Phase',
+	'Dash',
+	'Warp',
+	'Teleport'
+}, {
+	Default = {
+		BonusDist = 0,
+		Delay = 0
+	},
+	Killer = {
+		BonusDist = 1,
+		Delay = 0.040000000000000001
+	},
+	Abysswalker = {
+		BonusDist = 3.5,
+		Delay = 0.12
+	},
+	Hidden = {
+		BonusDist = 2.2000000000000002,
+		Delay = 0
+	},
+	Masked = {
+		BonusDist = 1.5,
+		Delay = 0.050000000000000003
+	},
+	Stalker = {
+		BonusDist = 1.8,
+		Delay = 0
+	},
+	Veil = {
+		BonusDist = 3.2000000000000002,
+		Delay = 0.040000000000000001
+	},
+	Slasher = {
+		BonusDist = 1.2,
+		Delay = 0.050000000000000003
+	}
+}
+local function Yp()
+	if not (Ti and Ti['Parent']) then
+	else
+		return Ti
+	end
+	local Ib = Kl['FindFirstChild'](Kl, 'Remotes')
+	if not (not Ib) then
+	else
+		return
+	end
+	local pe = Ib['FindFirstChild'](Ib, 'Items')
+	local zb = pe and pe['FindFirstChild'](pe, 'Parrying Dagger')
+	if not (zb and zb['FindFirstChild'](zb, 'parry')) then
+		for rf, yb in ipairs(Ib['GetDescendants'](Ib)) do
+			if not (yb['IsA'](yb, 'RemoteEvent') and yb['Name']['lower'](yb['Name']) == 'parry') then
+			else
+				Ti = yb
+				break
+			end
+		end
+	else
+		Ti = zb['parry']
+	end
+	return Ti
+end
+local function Zm()
+	local za = 0.089999999999999997;
+	pcall(function()
+		za = game['GetService'](game, 'Stats')['Network']['ServerStatsItem']['Data Ping']['GetValue'](game['GetService'](game, 'Stats')['Network']['ServerStatsItem']['Data Ping']) / 1000
+	end)
+	return math['clamp'](za, 0.040000000000000001, 0.22)
+end
+local function Ji(Mo)
+	for Bh, ra in ipairs(Ua) do
+		if not (Mo['GetAttribute'](Mo, ra) or ge(Mo, ra)) then
+		else
+			return true
+		end
+	end
+	return false
+end
+local function Qq(va)
+	local Cm = getgenv()['ParryMatchup'] or 'Auto-Detect'
+	if not (Cm ~= 'Auto-Detect') then
+	else
+		return sf[Cm] or sf['Default']
+	end
+	local bh = tostring(va['GetAttribute'](va, 'KillerType') or va['GetAttribute'](va, 'Mask') or va['Name'])['lower'](tostring(va['GetAttribute'](va, 'KillerType') or va['GetAttribute'](va, 'Mask') or va['Name']))
+	for Wc, nq in pairs(sf) do
+		if bh['find'](bh, Wc['lower'](Wc)) then
+			return nq
+		end
+	end
+	return sf['Default']
+end
+local function pj()
+	local Yg = tick()
+	if Yg - tl < 0.45000000000000001 then
+		return
+	end
+	local Uj = Yp()
+	if not Uj then
+		return
+	end
+	local _g = He['Character']
+	local Qn, Me = _g and _g['FindFirstChild'](_g, 'HumanoidRootPart'), _g and _g['FindFirstChild'](_g, 'Humanoid')
+	if not (not Qn or not Me or Me['Health'] <= 0) then
+	else
+		return
+	end
+	local Rq = _g['FindFirstChild'](_g, 'Parrying Dagger') or _g['FindFirstChildWhichIsA'](_g, 'Tool')
+	if not Rq then
+		return
+	end
+	local Wm = Zm()
+	local ig
+	local Ej = math['huge']
+	for l_, _e in ipairs(ia['GetPlayers'](ia)) do
+		if _e ~= He and _e['Team'] and _e['Team']['Name']['lower'](_e['Team']['Name'])['find'](_e['Team']['Name']['lower'](_e['Team']['Name']), 'killer') and _e['Character'] then
+			local Ka = _e['Character']
+			local Ge, ki = Ka['FindFirstChild'](Ka, 'HumanoidRootPart'), Ka['FindFirstChild'](Ka, 'Humanoid')
+			if Ge and ki and ki['Health'] > 0 then
+				if not (Ji(Ka)) then
+				else
+					continue
+				end
+				local gr = Qq(Ka)
+				local bb, kl = (tonumber(jn) or 10) + gr['BonusDist'] + (Wm * 10), Ge['Position']
+				do
+					local Zc = Ge['AssemblyLinearVelocity']
+					if not (Zc['Magnitude'] > 32) then
+					else
+						Zc = Zc['Unit'] * 32
+					end
+					local ib = getgenv()['AimStrictness'] or 1.3;
+					kl += Zc * (Wm + (ib * 0.044999999999999998))
+				end
+				local A = (kl - Qn['Position'])['Magnitude']
+				if not (A <= bb and A < Ej) then
+				else
+					Ej = A;
+					ig = {
+						Root = Ge,
+						Profile = gr
+					}
+				end
+			end
+		end
+	end
+	if not (not ig) then
+	else
+		return
+	end
+	tl = Yg
+	local sc = (ig['Profile']['Delay'] or 0) + (getgenv()['ParryDelayOffset'] or 0);
+	task['spawn'](function()
+		if not (sc > 0) then
+		else
+			task['wait'](sc)
+		end
+		for yc = 228, (8) + 227 do
+			if not Uj or not Uj['Parent'] then
+				break
+			end
+			pcall(function()
+				Uj['FireServer'](Uj)
+			end);
+			task['wait'](0.012)
+		end
+	end)
+end
+task['spawn'](function()
+	local Rn = {}
+	while task['wait'](0.20000000000000001) do
+		if not (not getgenv()['MELONZ_RUNNING']) then
+		else
+			break
+		end
+		if not (Fd) then
+			if next(Rn) ~= nil then
+				table['clear'](Rn)
+			end
+		else
+			pcall(function()
+				for Vg, Rj in ipairs(ia['GetPlayers'](ia)) do
+					local Vo = Rj['Team'] and Rj['Team']['Name']['lower'](Rj['Team']['Name']) or ''
+					if Vo['find'](Vo, 'killer') and Rj['Character'] then
+						local uk = Rj['Character']
+						local o_ = ge(uk, 'Stunned') or ge(uk, 'IsStunned')
+						local wp = o_ == true or (type(o_) == 'number' and o_ > 0)
+						if not (wp and not Rn[Rj['UserId']]) then
+						else
+							Vc['Notify'](Vc, {
+								Title = 'KILLER STUNNED!',
+								Content = Rj['Name'] .. ' berhasil stunned!!',
+								Icon = 'lucide:dizzy',
+								Duration = 3
+							})
+						end
+						Rn[Rj['UserId']] = wp
+					end
+				end
+			end)
+		end
+	end
+end);
+Bp(getgenv()['MELONZ_CONNECTIONS'], jj['RenderStepped']['Connect'](jj['RenderStepped'], function(Kf)
+	local V = He['Character']
+	local aj, Bc, wa, Yh = V and V['FindFirstChild'](V, 'HumanoidRootPart'), V and V['FindFirstChild'](V, 'Humanoid'), workspace['CurrentCamera'], getgenv()['MoonwalkEnabled']
+	if Yh ~= Ng then
+		if Bc then
+			Bc['AutoRotate'] = not Yh
+		end
+		Ng = Yh
+		if not (Yh and aj) then
+		else
+			local ja, wq, fl = aj['CFrame']['ToEulerAnglesYXZ'](aj['CFrame']);
+			jo = math['deg'](wq)
+		end
+	end
+	if not (Yh and aj and Bc and Bc['Health'] > 0) then
+	else
+		local rp = wa['CFrame']['LookVector']
+		local Mh = math['deg'](math['atan2'](rp['X'], rp['Z'])) + 180
+		local Z, Lh = (Mh - (jo or 0) + 180) % 360 - 180, 0.22 * math['clamp'](Kf * 60, 0, 3);
+		jo = (jo or 0) + (Z * Lh)
+		local mf, bn = Bc['MoveDirection']['Magnitude'] > 0.01, 0
+		if not (mf) then
+		else
+			local Gg = getgenv()['MoonwalkZigzagSpeed'] or 11;
+			bn = math['sin'](tick() * Gg) * 48
+		end
+		n_ = (n_ or 0) + (bn - (n_ or 0)) * 0.38;
+		aj['CFrame'] = CFrame['new'](aj['Position']) * CFrame['Angles'](0, math['rad'](jo + n_), 0)
+		if mf then
+			local Ul = getgenv()['MoonwalkBoostPower'] or 1.0800000000000001;
+			Bc['Move'](Bc, Bc['MoveDirection'] * Ul, false)
+		end
+	end
+	if x and aj and Bc and Bc['Health'] > 0 then
+		local jr = os['clock']()
+		if not (jr - Wn > 0.25) then
+		else
+			Po = ge(V, 'Carrying') or ge(V, 'IsCarrying') or false;
+			Wn = jr
+		end
+		if not (not Po) then
+		else
+			if not (jr - nd > 0.10000000000000001) then
+			else
+				Oo = Og(Oo);
+				nd = jr
+			end
+			local Pb = Oo
+			if not (not Pb) then
+			else
+				Oo = nil
+				return
+			end
+			if not Pb['Parent'] then
+				Oo = nil
+				return
+			end
+			if Pb and Pb['Parent'] then
+				local Dd, bm = false, getgenv()['AimbotTrigger'] or 'Hold to Lock'
+				if bm == 'Auto Lock (Always)' then
+					Dd = true
+				else
+					pcall(function()
+						if not (na['IsMouseButtonPressed'](na, Enum['UserInputType']['MouseButton1']) or na['IsMouseButtonPressed'](na, Enum['UserInputType']['MouseButton2'])) then
+						else
+							Dd = true
+						end
+						if jr - lg > 0.050000000000000003 then
+							vm = na['GetTouches'](na);
+							lg = jr
+						end
+						for Dn, qo in ipairs(vm) do
+							if qo['Position']['X'] > (wa['ViewportSize']['X'] / 2) then
+								Dd = true
+								break
+							end
+						end
+					end)
+					if not (getgenv()['isMobileFiring']) then
+					else
+						Dd = true
+					end
+				end
+				if Dd then
+					local gq = Pb['Position']
+					if not (kf) then
+					else
+						local Cf = (aj['Position'] - gq)['Magnitude']
+						if not (Cf > 15) then
+						else
+							gq = gq + Zk(0, Cf * 0.080000000000000002, 0)
+						end
+					end
+					local O = tonumber(getgenv()['AimbotSmoothness']) or 8;
+					O = math['clamp'](O, 1, 25)
+					local El = math['clamp'](Kf * O, 0.02, 0.34999999999999998);
+					pcall(function()
+						local kd = CFrame['lookAt'](wa['CFrame']['Position'], gq);
+						wa['CFrame'] = wa['CFrame']['Lerp'](wa['CFrame'], kd, El)
+					end)
+				end
+			end
+		end
+	else
+		Oo = nil
+	end
+end));
+jj['BindToRenderStep'](jj, 'SmoothFOV', Enum['RenderPriority']['Camera']['Value'] + 1, function()
+	if not (Kg and workspace['CurrentCamera']) then
+	else
+		workspace['CurrentCamera']['FieldOfView'] = wi
+	end
+end)
+local Cg, nm = {}, false;
+Bp(getgenv()['MELONZ_CONNECTIONS'], jj['Heartbeat']['Connect'](jj['Heartbeat'], function(Up)
+	if not (not getgenv()['MELONZ_RUNNING']) then
+	else
+		return
+	end
+	local Sm, md = os['clock'](), He['Character']
+	if not md then
+		return
+	end
+	local Sb, Te = md['FindFirstChildOfClass'](md, 'Humanoid'), md['FindFirstChild'](md, 'HumanoidRootPart')
+	if not Sb or not Te then
+		return
+	end
+	local function bk(kj)
+		return kj == true or (type(kj) == 'number' and kj > 0)
+	end
+	local Mm = He['Team'] and He['Team']['Name']['lower'](He['Team']['Name']) or ''
+	local Rp = Mm['find'](Mm, 'killer') ~= nil
+	if not (Sm - Ye > 0.34999999999999998) then
+	else
+		Ye = Sm;
+		pcall(function()
+			og()
+		end)
+	end
+	Ce = 999
+	local vc, ip = false, ia['GetPlayers'](ia)
+	for Ai = 127, (# ip) + 126 do
+		local Wj = ip[(Ai - 126)]
+		if not (Wj ~= He and Wj['Character']) then
+		else
+			local Xp = Wj['Character']
+			local Jk = Xp['FindFirstChild'](Xp, 'HumanoidRootPart')
+			if Jk then
+				local ym = Wj['Team'] and Wj['Team']['Name']['lower'](Wj['Team']['Name']) or ''
+				if not (string['find'](ym, 'killer')) then
+				else
+					local gi = (Jk['Position'] - Te['Position'])['Magnitude']
+					if gi < Ce then
+						Ce = gi
+						local Fk = Xp['FindFirstChildOfClass'](Xp, 'Humanoid')
+						if not (Fk and Fk['MoveDirection']['Magnitude'] > 0) then
+						else
+							vc = true
+						end
+					end
+					if Rd then
+						if E(Jk['Size']['X']) ~= E(Qo) then
+							pcall(function()
+								Jk['Size'] = Zk(Qo, Qo, Qo);
+								Jk['Transparency'] = 0.94999999999999996;
+								Jk['Material'] = Enum['Material']['ForceField'];
+								Jk['BrickColor'] = BrickColor['new']'Really red';
+								Jk['CanCollide'] = false;
+								Jk['Massless'] = true
+							end)
+						end
+					end
+				end
+			end
+		end
+	end
+	local qh = Te['FindFirstChild'](Te, 'KillerWarn')
+	if not (true and Ce <= 60) then
+		if qh then
+			qh['Destroy'](qh)
+		end
+	else
+		local Nb = Ce <= 40
+		local a_, Eb = Nb and '!!' or '!', Nb and Color3['new'](1, 0, 0) or Color3['new'](1, 0.59999999999999998, 0)
+		if not (qh) then
+			qh = Xl(a_, Eb, UDim2['new'](0, 15, 0, 15), 16);
+			qh['Name'] = 'KillerWarn';
+			qh['StudsOffset'] = Zk(0, 4, 0);
+			qh['Parent'] = Te
+		else
+			qh['Label']['Text'] = a_;
+			qh['Label']['TextColor3'] = Eb
+		end
+	end
+	local _m = type(jn) == 'table' and (jn['Default'] or jn['Value'] or 12) or tonumber(jn) or 12
+	local Fi = vc and (_m + 3) or _m
+	if not (Ha and Ce <= Fi) then
+	else
+		pcall(function()
+			pj()
+		end)
+	end
+	if not (not nm) then
+	else
+		local om = Kl['FindFirstChild'](Kl, 'Remotes')
+		if not (om) then
+		else
+			Cg['DisplayBlood'] = om['FindFirstChild'](om, 'DisplayBlood', true) or om['FindFirstChild'](om, 'BloodEvent', true);
+			Cg['FallDamage'] = om['FindFirstChild'](om, 'FallDamage', true);
+			Cg['HealEvent'] = om['FindFirstChild'](om, 'HealEvent', true) or om['FindFirstChild'](om, 'RequestHeal', true) or om['FindFirstChild'](om, 'ReviveEvent', true);
+			Cg['UnHook'] = om['FindFirstChild'](om, 'UnHookEvent', true) or om['FindFirstChild'](om, 'Unhook', true)
+		end
+		nm = true
+	end
+	local mg = false
+	for Kh, cp in ipairs(Sb['GetPlayingAnimationTracks'](Sb)) do
+		if cp['Animation'] then
+			local gn = cp['Animation']['Name']['lower'](cp['Animation']['Name'])
+			if gn['find'](gn, 'hook') or gn['find'](gn, 'grab') or gn['find'](gn, 'pickup') or gn['find'](gn, 'place') then
+				mg = true
+				break
+			end
+		end
+	end
+	if not (not Rp and Sb['Health'] > 0) then
+	else
+		local yd = bk(ge(md, 'IsHooked')) or bk(ge(md, 'Carried')) or md['GetAttribute'](md, 'IsHooked') or md['GetAttribute'](md, 'Carried') or md['GetAttribute'](md, 'Grabbed')
+		if not yd and not mg and Sb['MoveDirection']['Magnitude'] > 0 then
+			local ff = Sb['WalkSpeed']
+			local Q = ff
+			if Co and ff < 17 then
+				Q = 17
+			end
+			if not (mm) then
+			else
+				local ad = tonumber(vd) or 0;
+				ad = math['clamp'](ad, 0, 150);
+				Q = Q + (Q * (ad / 100))
+			end
+			local Pn = Q - ff
+			if Pn > 0 then
+				local oq = Sb['MoveDirection'] * (Pn * Up);
+				pcall(function()
+					Te['CFrame'] = Te['CFrame'] + oq
+				end)
+			end
+		end
+	end
+	if not (not Rp and Jn and Sb['Health'] > 0) then
+	else
+		local _i, Ga, Jd = getgenv()['LastHeal'] or 0, {
+			'Injured',
+			'Bleeding',
+			'Downed',
+			'Hurt',
+			'Broken',
+			'Wounded'
+		}, Sb['Health'] < (Sb['MaxHealth'] - 2)
+		for vj, yg in ipairs(Ga) do
+			if not (bk(ge(md, yg)) or md['GetAttribute'](md, yg)) then
+			else
+				Jd = true
+				break
+			end
+		end
+		if not (Jd and (Sm - _i > 0.45000000000000001)) then
+		else
+			getgenv()['LastHeal'] = Sm;
+			pcall(function()
+				Sb['Health'] = Sb['MaxHealth']
+			end)
+			for Pk, kr in ipairs(Ga) do
+				pcall(function()
+					if md['GetAttribute'](md, kr) ~= nil then
+						md['SetAttribute'](md, kr, false)
+					end
+					local Ah = md['FindFirstChild'](md, kr)
+					if not (Ah) then
+					else
+						if Ah['IsA'](Ah, 'BoolValue') then
+							Ah['Value'] = false
+						elseif not (Ah['IsA'](Ah, 'NumberValue') or Ah['IsA'](Ah, 'IntValue')) then
+						else
+							Ah['Value'] = 0
+						end
+					end
+				end)
+			end
+			for ii, wn in ipairs(md['GetDescendants'](md)) do
+				local Xj = wn['Name']['lower'](wn['Name'])
+				if not (Xj['find'](Xj, 'blood') or Xj['find'](Xj, 'injure') or Xj['find'](Xj, 'hurt') or Xj['find'](Xj, 'bleed')) then
+				else
+					if not (wn['IsA'](wn, 'ParticleEmitter') or wn['IsA'](wn, 'Trail')) then
+						if wn['IsA'](wn, 'Highlight') then
+							wn['Destroy'](wn)
+						end
+					else
+						wn['Enabled'] = false
+					end
+				end
+			end
+			Sb['PlatformStand'] = false;
+			Sb['Sit'] = false;
+			Sb['AutoRotate'] = true
+			local Ob = {
+				Enum['HumanoidStateType']['Physics'],
+				Enum['HumanoidStateType']['Ragdoll'],
+				Enum['HumanoidStateType']['FallingDown']
+			}
+			for Tj, Vi in ipairs(Ob) do
+				if Sb['GetState'](Sb) == Vi then
+					Sb['ChangeState'](Sb, Enum['HumanoidStateType']['GettingUp'])
+					break
+				end
+			end
+			task['defer'](function()
+				pcall(function()
+					Sb['WalkSpeed'] = 16;
+					Sb['JumpPower'] = 50;
+					Sb['ChangeState'](Sb, Enum['HumanoidStateType']['Running'])
+					if Te then
+						Te['AssemblyLinearVelocity'] = Vector3['zero']
+					end
+				end)
+			end)
+		end
+	end
+	local uj, gh, nl = getgenv()['LastAntiKnock'] or 0, bk(ge(md, 'Knocked')) or md['GetAttribute'](md, 'Knocked'), bk(ge(md, 'Carried')) or md['GetAttribute'](md, 'Carried') or md['GetAttribute'](md, 'Grabbed')
+	if not (_d and (gh or nl) and (Sm - uj > 0.29999999999999999)) then
+	else
+		getgenv()['LastAntiKnock'] = Sm
+		local Zg = {
+			'Knocked',
+			'Carried',
+			'Grabbed',
+			'Ragdolled',
+			'Captured',
+			'Disabled'
+		}
+		for dr, Db in ipairs(Zg) do
+			pcall(function()
+				if not (md['GetAttribute'](md, Db) ~= nil) then
+				else
+					md['SetAttribute'](md, Db, false)
+				end
+				local wf = md['FindFirstChild'](md, Db)
+				if wf then
+					if wf['IsA'](wf, 'BoolValue') then
+						wf['Value'] = false
+					elseif wf['IsA'](wf, 'NumberValue') or wf['IsA'](wf, 'IntValue') then
+						wf['Value'] = 0
+					end
+				end
+			end)
+		end
+		Sb['PlatformStand'] = false;
+		Sb['Sit'] = false;
+		Sb['AutoRotate'] = true
+		local _c = Sb['GetState'](Sb)
+		if not (_c == Enum['HumanoidStateType']['Physics'] or _c == Enum['HumanoidStateType']['Ragdoll'] or _c == Enum['HumanoidStateType']['FallingDown'] or _c == Enum['HumanoidStateType']['PlatformStanding']) then
+		else
+			Sb['ChangeState'](Sb, Enum['HumanoidStateType']['GettingUp'])
+		end
+		task['defer'](function()
+			pcall(function()
+				Sb['Health'] = Sb['MaxHealth'];
+				Sb['WalkSpeed'] = 16
+				if not (Te) then
+				else
+					Te['AssemblyLinearVelocity'] = Vector3['zero']
+				end
+				Sb['ChangeState'](Sb, Enum['HumanoidStateType']['Running'])
+			end)
+		end)
+	end
+	if not (not Rp and fj and not getgenv()['IsUnhooking'] and bk(ge(md, 'IsHooked'))) then
+	else
+		getgenv()['IsUnhooking'] = true;
+		task['spawn'](function()
+			local kh, qn = nil, 12
+			if nc and nc['Hooks'] then
+				for qf, vi in ipairs(nc['Hooks']) do
+					local Wk = vi['FindFirstChild'](vi, 'HookPoint') or vi['PrimaryPart'] or vi['FindFirstChildWhichIsA'](vi, 'BasePart')
+					if not (Wk) then
+					else
+						local fd = (Wk['Position'] - Te['Position'])['Magnitude']
+						if not (fd < qn) then
+						else
+							qn = fd;
+							kh = Wk
+						end
+					end
+				end
+			end
+			if kh and Cg and Cg['UnHook'] then
+				for Yq = 51, (5) + 50 do
+					if not (not bk(ge(md, 'IsHooked'))) then
+					else
+						break
+					end
+					pcall(function()
+						Cg['UnHook']['FireServer'](Cg['UnHook'], kh)
+					end);
+					task['wait'](0.20000000000000001)
+				end
+			end
+			task['wait'](0.80000000000000004);
+			getgenv()['IsUnhooking'] = false
+		end)
+	end
+	if _b then
+		local Rl = getgenv()['LastBlindClean'] or 0
+		if not (Sm - Rl > 0.5) then
+		else
+			getgenv()['LastBlindClean'] = Sm
+			for We, Zj in ipairs(Ym['GetChildren'](Ym)) do
+				if not (Zj['IsA'](Zj, 'BlurEffect') or Zj['IsA'](Zj, 'ColorCorrectionEffect') or Zj['IsA'](Zj, 'SunRaysEffect') or Zj['IsA'](Zj, 'BloomEffect') or Zj['IsA'](Zj, 'DepthOfFieldEffect')) then
+				else
+					pcall(function()
+						Zj['Enabled'] = false;
+						Zj['Destroy'](Zj)
+					end)
+				end
+			end
+			local qd = Ym['FindFirstChildOfClass'](Ym, 'Atmosphere')
+			if qd then
+				pcall(function()
+					qd['Destroy'](qd)
+				end)
+			end
+			local De = He['FindFirstChildOfClass'](He, 'PlayerGui')
+			if De then
+				for Zl, ak in ipairs(De['GetDescendants'](De)) do
+					local li = ak['Name']['lower'](ak['Name'])
+					if li['find'](li, 'blind') or li['find'](li, 'flash') or li['find'](li, 'white') or li['find'](li, 'dark') or li['find'](li, 'fog') or li['find'](li, 'overlay') then
+						pcall(function()
+							if ak['IsA'](ak, 'ScreenGui') then
+								ak['Enabled'] = false
+							end
+							if ak['IsA'](ak, 'ImageLabel') or ak['IsA'](ak, 'Frame') then
+								ak['Visible'] = false;
+								ak['BackgroundTransparency'] = 1
+							end
+						end)
+					end
+				end
+			end
+		end
+	end
+	if r_ and not mg and bk(ge(md, 'Stunned')) then
+		pcall(function()
+			md['SetAttribute'](md, 'Stunned', false)
+			local xe = md['FindFirstChild'](md, 'Stunned')
+			if not (xe and xe['IsA'](xe, 'BoolValue')) then
+			else
+				xe['Value'] = false
+			end
+			if not (Sb['PlatformStand']) then
+			else
+				Sb['PlatformStand'] = false
+			end
+			if not (Sb['Sit']) then
+			else
+				Sb['Sit'] = false
+			end
+		end)
+	end
+end))
+local Hf, uh = nil, false;
+getgenv()['AIFinalTarget'] = nil;
+task['spawn'](function()
+	while task['wait'](0.40000000000000002) do
+		if not (not getgenv()['MELONZ_RUNNING']) then
+		else
+			break
+		end
+		if not (not mo) then
+		else
+			getgenv()['CachedWaypoints'] = nil;
+			getgenv()['AIFinalTarget'] = nil
+			continue
+		end
+		pcall(function()
+			local yq = He['Character']
+			local fa_, Zo = yq and yq['FindFirstChild'](yq, 'HumanoidRootPart'), yq and yq['FindFirstChild'](yq, 'Humanoid')
+			if not (not fa_ or not Zo or Zo['Health'] <= 0) then
+			else
+				return
+			end
+			local Uk = He['Team'] and He['Team']['Name']['lower'](He['Team']['Name']) or ''
+			if not (Uk['find'](Uk, 'killer')) then
+			else
+				return
+			end
+			local function Uo()
+				if not (ge(yq, 'IsHooked') or yq['GetAttribute'](yq, 'IsHooked')) then
+				else
+					return true
+				end
+				if ge(yq, 'Carried') or ge(yq, 'Grabbed') or yq['GetAttribute'](yq, 'Carried') then
+					return true
+				end
+				return false
+			end
+			if not (Uo()) then
+			else
+				getgenv()['CachedWaypoints'] = nil;
+				getgenv()['AIFinalTarget'] = nil
+				return
+			end
+			local Do, Cb, le, mn, tp, rc = fa_['Position'], 999, nil, nil, 90, ia['GetPlayers'](ia)
+			for g, wl in ipairs(rc) do
+				if not (wl ~= He and wl['Character']) then
+				else
+					local Oh = wl['Character']['FindFirstChild'](wl['Character'], 'HumanoidRootPart')
+					if not (Oh) then
+					else
+						local mc, In = wl['Team'] and wl['Team']['Name']['lower'](wl['Team']['Name']) or '', (Oh['Position'] - Do)['Magnitude']
+						if mc['find'](mc, 'killer') then
+							if not (In < Cb) then
+							else
+								Cb = In;
+								le = Oh
+							end
+						else
+							local tf, Ui = ge(wl['Character'], 'Knocked'), wl['Character']['FindFirstChild'](wl['Character'], 'Humanoid')
+							local we = Ui and Ui['Health'] < Ui['MaxHealth']
+							if (tf or we) and In < tp then
+								tp = In;
+								mn = wl['Character']
+							end
+						end
+					end
+				end
+			end
+			local Tk, hf, ub = 0, 9999, nil
+			if not (nc and nc['Generators']) then
+			else
+				for ah, Hj in ipairs(nc['Generators']) do
+					local Wf = ge(Hj, 'RepairProgress') or ge(Hj, 'Progress') or 0
+					if Wf >= 100 then
+						Tk = Tk + 1
+					else
+						local cf = Hj['GetPivot'](Hj)['Position']
+						local Pd = (cf - Do)['Magnitude']
+						if not (Pd < hf) then
+						else
+							hf = Pd;
+							ub = cf
+						end
+					end
+				end
+			end
+			local lc, q = nil, 'Idle'
+			if Cb <= 70 and le then
+				local bo, Fn, ek = 0, nil, le['Position']
+				local function Aj(ng)
+					local Qd = ng['GetPivot'](ng)['Position']
+					local m = (Qd - ek)['Magnitude']
+					if not (m > bo) then
+					else
+						bo = m;
+						Fn = Qd
+					end
+				end
+				if nc['Generators'] then
+					for hg, Xn in ipairs(nc['Generators']) do
+						Aj(Xn)
+					end
+				end
+				if not (nc['Gates']) then
+				else
+					for Xc, Gc in ipairs(nc['Gates']) do
+						Aj(Gc)
+					end
+				end
+				if Fn then
+					lc = Fn
+				else
+					local Tf = (Do - ek)['Unit'];
+					lc = Do + (Tf * 50)
+				end
+				q = 'Evading'
+			elseif not (mn) then
+				if Tk < 5 and ub then
+					lc = ub;
+					q = 'Repairing'
+				elseif Tk >= 5 then
+					if nc and nc['Gates'] then
+						local Lp = 9999
+						for Se, ug in ipairs(nc['Gates']) do
+							local Di = ug['GetPivot'](ug)['Position']
+							local qi = (Di - Do)['Magnitude']
+							if not (qi < Lp) then
+							else
+								Lp = qi;
+								lc = Di
+							end
+						end
+					end
+					q = 'Escaping'
+				end
+			else
+				lc = mn['HumanoidRootPart']['Position'];
+				q = 'Healing'
+				if tp <= 12 then
+					if not (not uh) then
+					else
+						local Yc = Kl['FindFirstChild'](Kl, 'Remotes');
+						Hf = Yc and (Yc['FindFirstChild'](Yc, 'HealEvent', true) or Yc['FindFirstChild'](Yc, 'RequestHeal', true) or Yc['FindFirstChild'](Yc, 'ReviveEvent', true));
+						uh = true
+					end
+					if Hf then
+						pcall(function()
+							Hf['FireServer'](Hf, mn, 100)
+						end);
+						pcall(function()
+							Hf['FireServer'](Hf, mn, true)
+						end)
+					end
+					getgenv()['CachedWaypoints'] = nil;
+					getgenv()['AIFinalTarget'] = nil
+					if (Zo['WalkToPoint'] - Do)['Magnitude'] > 1 then
+						Zo['MoveTo'](Zo, Do)
+					end
+					return
+				end
+			end
+			if not (getgenv()['LastAIState'] ~= q) then
+			else
+				getgenv()['LastAIState'] = q
+				local _n = {
+					Evading = 'lucide:footprints',
+					Healing = 'lucide:heart-handshake',
+					Repairing = 'lucide:wrench',
+					Escaping = 'lucide:door-open',
+					Idle = 'lucide:coffee'
+				}
+				if not (q ~= 'Idle') then
+				else
+					Vc['Notify'](Vc, {
+						Title = 'AI State: ' .. string['upper'](q),
+						Content = 'Mengalihkan rute prioritas AI ke: ' .. q,
+						Icon = _n[q] or 'lucide:bot',
+						Duration = 3
+					})
+				end
+			end
+			getgenv()['AIFinalTarget'] = lc
+			if lc then
+				local Ko, Hc, Ol = os['clock'](), getgenv()['LastPathCalc'] or 0, getgenv()['LastTargetPos'] or Zk()
+				if (lc - Ol)['Magnitude'] > 5 or (Ko - Hc > 1.5) then
+					getgenv()['LastPathCalc'] = Ko;
+					getgenv()['LastTargetPos'] = lc;
+					task['spawn'](function()
+						pcall(function()
+							local nk = zf['CreatePath'](zf, {
+								AgentRadius = 2.5,
+								AgentHeight = 5,
+								AgentCanJump = true,
+								WaypointSpacing = 4
+							});
+							nk['ComputeAsync'](nk, Do, lc)
+							if not (nk['Status'] == Enum['PathStatus']['Success']) then
+								getgenv()['CachedWaypoints'] = nil
+							else
+								getgenv()['CachedWaypoints'] = nk['GetWaypoints'](nk);
+								getgenv()['CurrentWaypointIdx'] = 2
+							end
+						end)
+					end)
+				end
+			else
+				getgenv()['CachedWaypoints'] = nil
+				if not ((Zo['WalkToPoint'] - Do)['Magnitude'] > 1) then
+				else
+					Zo['MoveTo'](Zo, Do)
+				end
+			end
+		end)
+	end
+end);
+task['spawn'](function()
+	while task['wait'](0.050000000000000003) do
+		if not (not getgenv()['MELONZ_RUNNING']) then
+		else
+			break
+		end
+		if not mo then
+			continue
+		end
+		pcall(function()
+			local pk = He['Character']
+			local cj, ej = pk and pk['FindFirstChild'](pk, 'HumanoidRootPart'), pk and pk['FindFirstChild'](pk, 'Humanoid')
+			if not cj or not ej or ej['Health'] <= 0 then
+				return
+			end
+			local mb, pc, Tq = getgenv()['CachedWaypoints'], getgenv()['CurrentWaypointIdx'], cj['Position']
+			if not (mb and pc and pc <= # mb) then
+				if getgenv()['AIFinalTarget'] then
+					ej['MoveTo'](ej, getgenv()['AIFinalTarget'])
+				end
+			else
+				local zg = mb[pc]
+				local yp = (Zk(zg['Position']['X'], Tq['Y'], zg['Position']['Z']) - Tq)['Magnitude']
+				if yp < 4.5 then
+					getgenv()['CurrentWaypointIdx'] = pc + 1
+					if getgenv()['CurrentWaypointIdx'] <= # mb then
+						zg = mb[getgenv()['CurrentWaypointIdx']]
+					end
+				end
+				if not (zg) then
+				else
+					ej['MoveTo'](ej, zg['Position'])
+					if zg['Action'] == Enum['PathWaypointAction']['Jump'] then
+						ej['Jump'] = true
+					end
+				end
+			end
+			local Ei, Cd = os['clock'](), getgenv()['LastBotPos'] or Tq
+			local c = getgenv()['LastBotTime'] or Ei
+			if not (getgenv()['AIFinalTarget']) then
+			else
+				if (Tq - Cd)['Magnitude'] < 0.5 then
+					if Ei - c > 1 then
+						ej['Jump'] = true;
+						cj['CFrame'] = cj['CFrame'] * bg(math['random'](- 2, 2), 0, math['random'](1, 3));
+						getgenv()['LastBotTime'] = Ei + 0.5
+					end
+				else
+					getgenv()['LastBotPos'] = Tq;
+					getgenv()['LastBotTime'] = Ei
+				end
+			end
+		end)
+	end
+end);
+task['spawn'](function()
+	local nj = {
+		Remotes = {},
+		LastSearch = 0,
+		LastFire = 0,
+		LastUI = 0,
+		IsCaptured = false,
+		Toggle = false
+	}
+	local function L()
+		local Qf = He['Character']
+		if not Qf then
+			return false
+		end
+		local Hh = {
+			'Carried',
+			'IsCarried',
+			'Grabbed',
+			'Wiggling',
+			'Captured'
+		}
+		for ic, Tc in ipairs(Hh) do
+			if Qf['GetAttribute'](Qf, Tc) or IsStatusActive(ge(Qf, Tc)) then
+				return true
+			end
+		end
+		if tick() - nj['LastUI'] > 1 then
+			nj['LastUI'] = tick()
+			local Wd = He['FindFirstChildOfClass'](He, 'PlayerGui')
+			if Wd then
+				for k, zh in ipairs(Wd['GetChildren'](Wd)) do
+					if not (zh['IsA'](zh, 'ScreenGui') and zh['Enabled']) then
+					else
+						local Xa = zh['Name']['lower'](zh['Name'])
+						if not (Xa['find'](Xa, 'wiggle') or Xa['find'](Xa, 'struggle') or Xa['find'](Xa, 'escape')) then
+						else
+							return true
+						end
+					end
+				end
+			end
+		end
+		return false
+	end
+	local function hk()
+		if tick() - nj['LastSearch'] < 10 then
+			return
+		end
+		nj['LastSearch'] = tick();
+		table['clear'](nj['Remotes'])
+		local go = Kl['FindFirstChild'](Kl, 'Remotes')
+		if not (not go) then
+		else
+			return
+		end
+		for Rb, Nq in ipairs(go['GetDescendants'](go)) do
+			if not (Nq['IsA'](Nq, 'RemoteEvent')) then
+			else
+				local lm = Nq['Name']['lower'](Nq['Name'])
+				if not (lm['find'](lm, 'wiggle') or lm['find'](lm, 'struggle') or lm['find'](lm, 'escape')) then
+					if not (lm['find'](lm, 'skillcheck')) then
+					else
+						Bp(nj['Remotes'], {
+							Remote = Nq,
+							Type = 'skillcheck'
+						})
+					end
+				else
+					Bp(nj['Remotes'], {
+						Remote = Nq,
+						Type = 'wiggle'
+					})
+				end
+			end
+		end
+	end
+	while task['wait'](0.080000000000000002) do
+		if not (not getgenv()['MELONZ_RUNNING']) then
+		else
+			break
+		end
+		if not (not Ee) then
+		else
+			continue
+		end
+		local se_ = He['Character']
+		if not se_ then
+			continue
+		end
+		local wh_ = L()
+		if not wh_ then
+			nj['IsCaptured'] = false
+			continue
+		end
+		nj['IsCaptured'] = true;
+		hk()
+		local Mf = tick()
+		if Mf - nj['LastFire'] < 0.22 then
+			continue
+		end
+		nj['LastFire'] = Mf;
+		nj['Toggle'] = not nj['Toggle']
+		local Ii, _q = nj['Toggle'] and 'Left' or 'Right', nj['Toggle'] and 1 or - 1
+		for bd = 255, (math['min'](2, # nj['Remotes'])) + 254 do
+			local Lc = nj['Remotes'][(bd - 254)]
+			if not Lc or not Lc['Remote'] or not Lc['Remote']['Parent'] then
+				continue
+			end
+			local Vh = Lc['Remote'];
+			pcall(function()
+				if Lc['Type'] == 'skillcheck' then
+					Vh['FireServer'](Vh, 'perfect')
+				else
+					local w_ = ((bd - 254) + math['floor'](Mf * 10)) % 4
+					if not (w_ == 0) then
+						if not (w_ == 1) then
+							if w_ == 2 then
+								Vh['FireServer'](Vh, _q)
+							else
+								Vh['FireServer'](Vh)
+							end
+						else
+							Vh['FireServer'](Vh, Ii)
+						end
+					else
+						Vh['FireServer'](Vh, true)
+					end
+				end
+			end)
+		end
+	end
+end);
+Bp(getgenv()['MELONZ_CONNECTIONS'], He['CharacterAdded']['Connect'](He['CharacterAdded'], function(If)
+	local hd = If['WaitForChild'](If, 'Humanoid', 5)
+	if not (hd and mm) then
+	else
+		local Mn = tonumber(vd) or 0;
+		hd['WalkSpeed'] = 17 + (17 * (Mn / 100))
+	end
+end));
+Bp(getgenv()['MELONZ_CONNECTIONS'], ia['PlayerRemoving']['Connect'](ia['PlayerRemoving'], function(eg)
+	if not (db and db[eg['UserId']]) then
+	else
+		db[eg['UserId']] = nil
+	end
+	if not (eg['Character']) then
+	else
+		local ph = eg['Character']['FindFirstChild'](eg['Character'], 'HumanoidRootPart')
+		if not (ph) then
+		else
+			local Bo = ph['FindFirstChild'](ph, 'TagESP')
+			if Bo then
+				Bo['Destroy'](Bo)
+			end
+		end
+	end
+end))
+local gc = Vc['Notify'](Vc, {
+	Title = 'Welcome to Melonz Hub!',
+	Content = 'God-AI Systems Initialized.\n\240\159\146\187 PC User: Press [Keybind K] to open/hide the UI.',
+	Duration = 10,
+	CanClose = false,
+	Icon = 'lucide:sparkles'
+});
+Vc['SetNotificationLower'](Vc, true);
+task['wait'](4.5);
+gc['Close'](gc)
