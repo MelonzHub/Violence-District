@@ -1,0 +1,339 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "MelonzFakeParry"
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "Main"
+mainFrame.Size = UDim2.new(0, 220, 0, 120)
+mainFrame.Position = UDim2.new(0.5, -110, 0.5, -60)
+mainFrame.BackgroundColor3 = Color3.fromRGB(245, 245, 255)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = gui
+
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 10)
+
+local stroke = Instance.new("UIStroke", mainFrame)
+stroke.Color = Color3.fromRGB(170, 140, 255)
+stroke.Thickness = 1.5
+
+local topBar = Instance.new("Frame")
+topBar.Name = "TopBar"
+topBar.Size = UDim2.new(1, 0, 0, 26)
+topBar.BackgroundColor3 = Color3.fromRGB(180, 150, 255)
+topBar.BorderSizePixel = 0
+topBar.Parent = mainFrame
+Instance.new("UICorner", topBar).CornerRadius = UDim.new(0, 10)
+
+local title = Instance.new("TextLabel")
+title.Name = "Title"
+title.Size = UDim2.new(1, -50, 1, 0)
+title.Position = UDim2.new(0, 8, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "Melonz Fake Parry"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.Font = Enum.Font.GothamBold
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.TextSize = 12
+title.Parent = topBar
+
+local closeBtn = Instance.new("TextButton")
+closeBtn.Name = "Close"
+closeBtn.Size = UDim2.new(0, 24, 1, 0)
+closeBtn.Position = UDim2.new(1, -24, 0, 0)
+closeBtn.Text = "X"
+closeBtn.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+closeBtn.TextColor3 = Color3.new(1, 1, 1)
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 11
+closeBtn.Parent = topBar
+Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+
+closeBtn.MouseButton1Click:Connect(function()
+	gui:Destroy()
+end)
+
+local minimizeBtn = Instance.new("TextButton")
+minimizeBtn.Name = "Minimize"
+minimizeBtn.Size = UDim2.new(0, 24, 1, 0)
+minimizeBtn.Position = UDim2.new(1, -48, 0, 0)
+minimizeBtn.Text = "-"
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(120, 120, 255)
+minimizeBtn.TextColor3 = Color3.new(1, 1, 1)
+minimizeBtn.Font = Enum.Font.GothamBold
+minimizeBtn.TextSize = 11
+minimizeBtn.Parent = topBar
+Instance.new("UICorner", minimizeBtn).CornerRadius = UDim.new(0, 6)
+
+local minimizedBar = Instance.new("TextButton")
+minimizedBar.Name = "MinimizedBar"
+minimizedBar.Size = UDim2.new(0, 150, 0, 24)
+minimizedBar.Position = UDim2.new(0.5, -75, 0, 8)
+minimizedBar.BackgroundColor3 = Color3.fromRGB(180, 150, 255)
+minimizedBar.BackgroundTransparency = 0.2
+minimizedBar.Text = "Melonz Parry"
+minimizedBar.TextColor3 = Color3.new(1, 1, 1)
+minimizedBar.Font = Enum.Font.GothamBold
+minimizedBar.TextSize = 11
+minimizedBar.Visible = false
+minimizedBar.Parent = gui
+Instance.new("UICorner", minimizedBar).CornerRadius = UDim.new(0, 6)
+
+local minimizedStroke = Instance.new("UIStroke", minimizedBar)
+minimizedStroke.Color = Color3.fromRGB(170, 140, 255)
+minimizedStroke.Thickness = 1
+
+minimizeBtn.MouseButton1Click:Connect(function()
+	mainFrame.Visible = false
+	minimizedBar.Visible = true
+end)
+
+minimizedBar.MouseButton1Click:Connect(function()
+	minimizedBar.Visible = false
+	mainFrame.Visible = true
+end)
+
+local content = Instance.new("Frame")
+content.Name = "Content"
+content.Size = UDim2.new(1, -14, 1, -34)
+content.Position = UDim2.new(0, 7, 0, 30)
+content.BackgroundTransparency = 1
+content.Parent = mainFrame
+
+local selectedLabel = Instance.new("TextLabel")
+selectedLabel.Name = "SelectedAnim"
+selectedLabel.Size = UDim2.new(1, -32, 0, 18)
+selectedLabel.Position = UDim2.new(0, 0, 0, 4)
+selectedLabel.BackgroundTransparency = 1
+selectedLabel.Text = "Selected: Stopwatch"
+selectedLabel.TextColor3 = Color3.fromRGB(80, 80, 80)
+selectedLabel.Font = Enum.Font.GothamBold
+selectedLabel.TextSize = 11
+selectedLabel.TextXAlignment = Enum.TextXAlignment.Left
+selectedLabel.Parent = content
+
+local dropdownBtn = Instance.new("TextButton")
+dropdownBtn.Name = "DropdownBtn"
+dropdownBtn.Size = UDim2.new(0, 22, 0, 22)
+dropdownBtn.Position = UDim2.new(1, -22, 0, 2)
+dropdownBtn.Text = "v"
+dropdownBtn.BackgroundColor3 = Color3.fromRGB(170, 140, 255)
+dropdownBtn.TextColor3 = Color3.new(1, 1, 1)
+dropdownBtn.Font = Enum.Font.GothamBold
+dropdownBtn.TextSize = 12
+dropdownBtn.Parent = content
+Instance.new("UICorner", dropdownBtn).CornerRadius = UDim.new(1, 0)
+
+local dropdownFrame = Instance.new("Frame")
+dropdownFrame.Name = "Dropdown"
+dropdownFrame.Size = UDim2.new(0, 130, 0, 0)
+dropdownFrame.Position = UDim2.new(1, -130, 0, 28)
+dropdownFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+dropdownFrame.BorderSizePixel = 0
+dropdownFrame.Visible = false
+dropdownFrame.ZIndex = 10
+dropdownFrame.Parent = content
+Instance.new("UICorner", dropdownFrame).CornerRadius = UDim.new(0, 6)
+
+local dropdownStroke = Instance.new("UIStroke", dropdownFrame)
+dropdownStroke.Color = Color3.fromRGB(170, 140, 255)
+dropdownStroke.Thickness = 1
+
+local playBtn = Instance.new("TextButton")
+playBtn.Name = "PlayBtn"
+playBtn.Size = UDim2.new(1, 0, 0, 36)
+playBtn.Position = UDim2.new(0, 0, 0, 34)
+playBtn.Text = "Play Animation"
+playBtn.BackgroundColor3 = Color3.fromRGB(170, 140, 255)
+playBtn.TextColor3 = Color3.new(1, 1, 1)
+playBtn.Font = Enum.Font.GothamBold
+playBtn.TextSize = 13
+playBtn.Parent = content
+Instance.new("UICorner", playBtn).CornerRadius = UDim.new(0, 8)
+
+local animations = {
+	{id = "rbxassetid://81793464499285", name = "Stopwatch"},
+	{id = "rbxassetid://123307242865945", name = "Fih"},
+	{id = "rbxassetid://126894569253341", name = "Feedbacker"},
+	{id = "rbxassetid://75939529748815", name = "Blood Shield"},
+	{id = "rbxassetid://109133187196613", name = "Dagger"},
+}
+
+local currentIndex = 1
+local isPlaying = false
+local currentTrack = nil
+local animTracks = {}
+local dropdownOpen = false
+
+for i, animData in ipairs(animations) do
+	local item = Instance.new("TextButton")
+	item.Name = "Item_" .. i
+	item.Size = UDim2.new(1, -8, 0, 26)
+	item.Position = UDim2.new(0, 4, 0, (i - 1) * 29 + 4)
+	item.Text = animData.name
+	item.BackgroundColor3 = Color3.fromRGB(245, 245, 255)
+	item.TextColor3 = Color3.fromRGB(80, 80, 80)
+	item.Font = Enum.Font.GothamBold
+	item.TextSize = 11
+	item.ZIndex = 11
+	item.Parent = dropdownFrame
+	Instance.new("UICorner", item).CornerRadius = UDim.new(0, 5)
+
+	item.MouseEnter:Connect(function()
+		item.BackgroundColor3 = Color3.fromRGB(220, 210, 255)
+	end)
+
+	item.MouseLeave:Connect(function()
+		item.BackgroundColor3 = Color3.fromRGB(245, 245, 255)
+	end)
+
+	item.MouseButton1Click:Connect(function()
+		currentIndex = i
+		selectedLabel.Text = "Selected: " .. animData.name
+		dropdownOpen = false
+		dropdownFrame.Visible = false
+		dropdownBtn.Text = "v"
+		if isPlaying then
+			stopAnimation()
+			playAnimation()
+		end
+	end)
+end
+
+dropdownFrame.Size = UDim2.new(0, 130, 0, #animations * 29 + 4)
+
+dropdownBtn.MouseButton1Click:Connect(function()
+	dropdownOpen = not dropdownOpen
+	dropdownFrame.Visible = dropdownOpen
+	dropdownBtn.Text = dropdownOpen and "^" or "v"
+end)
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed then return end
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		if dropdownOpen then
+			local pos = input.Position
+			local dPos = dropdownFrame.AbsolutePosition
+			local dSize = dropdownFrame.AbsoluteSize
+			local bPos = dropdownBtn.AbsolutePosition
+			local bSize = dropdownBtn.AbsoluteSize
+			local outsideDropdown = pos.X < dPos.X or pos.X > dPos.X + dSize.X or pos.Y < dPos.Y or pos.Y > dPos.Y + dSize.Y
+			local outsideButton = pos.X < bPos.X or pos.X > bPos.X + bSize.X or pos.Y < bPos.Y or pos.Y > bPos.Y + bSize.Y
+			if outsideDropdown and outsideButton then
+				dropdownOpen = false
+				dropdownFrame.Visible = false
+				dropdownBtn.Text = "v"
+			end
+		end
+	end
+end)
+
+local function stopAnimation()
+	if currentTrack then
+		currentTrack:Stop()
+	end
+	isPlaying = false
+	currentTrack = nil
+	playBtn.Text = "Play Animation"
+	playBtn.BackgroundColor3 = Color3.fromRGB(170, 140, 255)
+end
+
+local function playAnimation()
+	local track = animTracks[currentIndex]
+	if not track then return end
+	track:Play()
+	track:AdjustSpeed(1)
+	currentTrack = track
+	isPlaying = true
+	playBtn.Text = "Stop Animation"
+	playBtn.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+end
+
+playBtn.MouseButton1Click:Connect(function()
+	if isPlaying then
+		stopAnimation()
+	else
+		playAnimation()
+	end
+end)
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed then return end
+	if input.KeyCode == Enum.KeyCode.Q then
+		if isPlaying then
+			stopAnimation()
+		else
+			playAnimation()
+		end
+	end
+end)
+
+local function setupAnimations(character)
+	local humanoid = character:WaitForChild("Humanoid")
+	local animator = humanoid:WaitForChild("Animator")
+
+	animTracks = {}
+
+	for i, animData in ipairs(animations) do
+		local anim = Instance.new("Animation")
+		anim.AnimationId = animData.id
+
+		local success, result = pcall(function()
+			return animator:LoadAnimation(anim)
+		end)
+
+		if success and result then
+			animTracks[i] = result
+
+			result.Stopped:Connect(function()
+				if currentTrack == result then
+					stopAnimation()
+				end
+			end)
+		else
+			warn("Failed to load " .. animData.name .. ": " .. tostring(result))
+		end
+	end
+end
+
+if player.Character then
+	setupAnimations(player.Character)
+end
+
+player.CharacterAdded:Connect(function(char)
+	stopAnimation()
+	setupAnimations(char)
+end)
+
+local draggingWindow = false
+local dragStart, startPos
+
+topBar.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		draggingWindow = true
+		dragStart = input.Position
+		startPos = mainFrame.Position
+	end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		draggingWindow = false
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if draggingWindow and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		local delta = input.Position - dragStart
+		mainFrame.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
+	end
+end)
