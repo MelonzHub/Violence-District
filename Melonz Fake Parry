@@ -1,6 +1,8 @@
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
 
 local gui = Instance.new("ScreenGui")
 gui.Name = "MelonzFakeParry"
@@ -9,8 +11,8 @@ gui.Parent = player:WaitForChild("PlayerGui")
 
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "Main"
-mainFrame.Size = UDim2.new(0, 220, 0, 120)
-mainFrame.Position = UDim2.new(0.5, -110, 0.5, -60)
+mainFrame.Size = UDim2.new(0, 240, 0, 130)
+mainFrame.Position = UDim2.new(0.5, -120, 0.5, -65)
 mainFrame.BackgroundColor3 = Color3.fromRGB(245, 245, 255)
 mainFrame.BorderSizePixel = 0
 mainFrame.Parent = gui
@@ -19,7 +21,7 @@ Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 10)
 
 local stroke = Instance.new("UIStroke", mainFrame)
 stroke.Color = Color3.fromRGB(170, 140, 255)
-stroke.Thickness = 1.5
+stroke.Thickness = 2
 
 local topBar = Instance.new("Frame")
 topBar.Name = "TopBar"
@@ -31,14 +33,14 @@ Instance.new("UICorner", topBar).CornerRadius = UDim.new(0, 10)
 
 local title = Instance.new("TextLabel")
 title.Name = "Title"
-title.Size = UDim2.new(1, -50, 1, 0)
+title.Size = UDim2.new(1, -60, 1, 0)
 title.Position = UDim2.new(0, 8, 0, 0)
 title.BackgroundTransparency = 1
 title.Text = "Melonz Fake Parry"
 title.TextColor3 = Color3.new(1, 1, 1)
 title.Font = Enum.Font.GothamBold
 title.TextXAlignment = Enum.TextXAlignment.Left
-title.TextSize = 12
+title.TextSize = 13
 title.Parent = topBar
 
 local closeBtn = Instance.new("TextButton")
@@ -49,7 +51,7 @@ closeBtn.Text = "X"
 closeBtn.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
 closeBtn.TextColor3 = Color3.new(1, 1, 1)
 closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 11
+closeBtn.TextSize = 12
 closeBtn.Parent = topBar
 Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
 
@@ -65,17 +67,17 @@ minimizeBtn.Text = "-"
 minimizeBtn.BackgroundColor3 = Color3.fromRGB(120, 120, 255)
 minimizeBtn.TextColor3 = Color3.new(1, 1, 1)
 minimizeBtn.Font = Enum.Font.GothamBold
-minimizeBtn.TextSize = 11
+minimizeBtn.TextSize = 12
 minimizeBtn.Parent = topBar
 Instance.new("UICorner", minimizeBtn).CornerRadius = UDim.new(0, 6)
 
 local minimizedBar = Instance.new("TextButton")
 minimizedBar.Name = "MinimizedBar"
-minimizedBar.Size = UDim2.new(0, 150, 0, 24)
-minimizedBar.Position = UDim2.new(0.5, -75, 0, 8)
+minimizedBar.Size = UDim2.new(0, 160, 0, 22)
+minimizedBar.Position = UDim2.new(0.5, -80, 0, 8)
 minimizedBar.BackgroundColor3 = Color3.fromRGB(180, 150, 255)
 minimizedBar.BackgroundTransparency = 0.2
-minimizedBar.Text = "Melonz Parry"
+minimizedBar.Text = "Melonz Fake Parry"
 minimizedBar.TextColor3 = Color3.new(1, 1, 1)
 minimizedBar.Font = Enum.Font.GothamBold
 minimizedBar.TextSize = 11
@@ -85,7 +87,7 @@ Instance.new("UICorner", minimizedBar).CornerRadius = UDim.new(0, 6)
 
 local minimizedStroke = Instance.new("UIStroke", minimizedBar)
 minimizedStroke.Color = Color3.fromRGB(170, 140, 255)
-minimizedStroke.Thickness = 1
+minimizedStroke.Thickness = 1.5
 
 minimizeBtn.MouseButton1Click:Connect(function()
 	mainFrame.Visible = false
@@ -99,22 +101,34 @@ end)
 
 local content = Instance.new("Frame")
 content.Name = "Content"
-content.Size = UDim2.new(1, -14, 1, -34)
-content.Position = UDim2.new(0, 7, 0, 30)
+content.Size = UDim2.new(1, -16, 1, -38)
+content.Position = UDim2.new(0, 8, 0, 34)
 content.BackgroundTransparency = 1
 content.Parent = mainFrame
 
 local selectedLabel = Instance.new("TextLabel")
 selectedLabel.Name = "SelectedAnim"
-selectedLabel.Size = UDim2.new(1, -32, 0, 18)
+selectedLabel.Size = UDim2.new(1, -56, 0, 18)
 selectedLabel.Position = UDim2.new(0, 0, 0, 4)
 selectedLabel.BackgroundTransparency = 1
-selectedLabel.Text = "Selected: Stopwatch"
+selectedLabel.Text = "Stopwatch"
 selectedLabel.TextColor3 = Color3.fromRGB(80, 80, 80)
 selectedLabel.Font = Enum.Font.GothamBold
-selectedLabel.TextSize = 11
+selectedLabel.TextSize = 12
 selectedLabel.TextXAlignment = Enum.TextXAlignment.Left
 selectedLabel.Parent = content
+
+local settingsBtn = Instance.new("TextButton")
+settingsBtn.Name = "Settings"
+settingsBtn.Size = UDim2.new(0, 18, 0, 18)
+settingsBtn.Position = UDim2.new(1, -42, 0, 4)
+settingsBtn.Text = "S"
+settingsBtn.BackgroundColor3 = Color3.fromRGB(150, 150, 180)
+settingsBtn.TextColor3 = Color3.new(1, 1, 1)
+settingsBtn.Font = Enum.Font.GothamBold
+settingsBtn.TextSize = 9
+settingsBtn.Parent = content
+Instance.new("UICorner", settingsBtn).CornerRadius = UDim.new(0, 4)
 
 local dropdownBtn = Instance.new("TextButton")
 dropdownBtn.Name = "DropdownBtn"
@@ -130,8 +144,8 @@ Instance.new("UICorner", dropdownBtn).CornerRadius = UDim.new(1, 0)
 
 local dropdownFrame = Instance.new("Frame")
 dropdownFrame.Name = "Dropdown"
-dropdownFrame.Size = UDim2.new(0, 130, 0, 0)
-dropdownFrame.Position = UDim2.new(1, -130, 0, 28)
+dropdownFrame.Size = UDim2.new(0, 150, 0, 0)
+dropdownFrame.Position = UDim2.new(1, -150, 0, 28)
 dropdownFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 dropdownFrame.BorderSizePixel = 0
 dropdownFrame.Visible = false
@@ -141,21 +155,21 @@ Instance.new("UICorner", dropdownFrame).CornerRadius = UDim.new(0, 6)
 
 local dropdownStroke = Instance.new("UIStroke", dropdownFrame)
 dropdownStroke.Color = Color3.fromRGB(170, 140, 255)
-dropdownStroke.Thickness = 1
+dropdownStroke.Thickness = 1.5
 
 local playBtn = Instance.new("TextButton")
 playBtn.Name = "PlayBtn"
-playBtn.Size = UDim2.new(1, 0, 0, 36)
-playBtn.Position = UDim2.new(0, 0, 0, 34)
-playBtn.Text = "Play Animation"
+playBtn.Size = UDim2.new(0, 160, 0, 36)
+playBtn.Position = UDim2.new(0.5, -80, 0, 34)
+playBtn.Text = "Play"
 playBtn.BackgroundColor3 = Color3.fromRGB(170, 140, 255)
 playBtn.TextColor3 = Color3.new(1, 1, 1)
 playBtn.Font = Enum.Font.GothamBold
-playBtn.TextSize = 13
+playBtn.TextSize = 14
 playBtn.Parent = content
 Instance.new("UICorner", playBtn).CornerRadius = UDim.new(0, 8)
 
-local animations = {
+local normalAnims = {
 	{id = "rbxassetid://81793464499285", name = "Stopwatch"},
 	{id = "rbxassetid://123307242865945", name = "Fih"},
 	{id = "rbxassetid://126894569253341", name = "Feedbacker"},
@@ -163,17 +177,46 @@ local animations = {
 	{id = "rbxassetid://109133187196613", name = "Dagger"},
 }
 
+local legitAnims = {
+	{id = "rbxassetid://121773684313913", name = "Legit Fake Parry", duration = 1.2, noLoop = true},
+}
+
+local allAnims = {}
+for _, a in ipairs(normalAnims) do table.insert(allAnims, a) end
+for _, a in ipairs(legitAnims) do table.insert(allAnims, a) end
+
 local currentIndex = 1
 local isPlaying = false
 local currentTrack = nil
 local animTracks = {}
 local dropdownOpen = false
+local stopTimer = nil
 
-for i, animData in ipairs(animations) do
+-- NEW: Settings variables
+local evenMoreLegit = false
+local lastVelocityMagnitude = 0
+
+local yOffset = 4
+
+local legitHeader = Instance.new("TextLabel")
+legitHeader.Size = UDim2.new(1, -8, 0, 18)
+legitHeader.Position = UDim2.new(0, 4, 0, yOffset)
+legitHeader.BackgroundColor3 = Color3.fromRGB(200, 180, 255)
+legitHeader.Text = " Legit"
+legitHeader.TextColor3 = Color3.fromRGB(100, 80, 140)
+legitHeader.Font = Enum.Font.GothamBold
+legitHeader.TextSize = 10
+legitHeader.TextXAlignment = Enum.TextXAlignment.Left
+legitHeader.ZIndex = 11
+legitHeader.Parent = dropdownFrame
+Instance.new("UICorner", legitHeader).CornerRadius = UDim.new(0, 3)
+yOffset = yOffset + 22
+
+for i, animData in ipairs(legitAnims) do
+	local globalIdx = #normalAnims + i
 	local item = Instance.new("TextButton")
-	item.Name = "Item_" .. i
-	item.Size = UDim2.new(1, -8, 0, 26)
-	item.Position = UDim2.new(0, 4, 0, (i - 1) * 29 + 4)
+	item.Size = UDim2.new(1, -8, 0, 24)
+	item.Position = UDim2.new(0, 4, 0, yOffset)
 	item.Text = animData.name
 	item.BackgroundColor3 = Color3.fromRGB(245, 245, 255)
 	item.TextColor3 = Color3.fromRGB(80, 80, 80)
@@ -181,19 +224,17 @@ for i, animData in ipairs(animations) do
 	item.TextSize = 11
 	item.ZIndex = 11
 	item.Parent = dropdownFrame
-	Instance.new("UICorner", item).CornerRadius = UDim.new(0, 5)
+	Instance.new("UICorner", item).CornerRadius = UDim.new(0, 4)
 
 	item.MouseEnter:Connect(function()
 		item.BackgroundColor3 = Color3.fromRGB(220, 210, 255)
 	end)
-
 	item.MouseLeave:Connect(function()
 		item.BackgroundColor3 = Color3.fromRGB(245, 245, 255)
 	end)
-
 	item.MouseButton1Click:Connect(function()
-		currentIndex = i
-		selectedLabel.Text = "Selected: " .. animData.name
+		currentIndex = globalIdx
+		selectedLabel.Text = animData.name
 		dropdownOpen = false
 		dropdownFrame.Visible = false
 		dropdownBtn.Text = "v"
@@ -202,9 +243,57 @@ for i, animData in ipairs(animations) do
 			playAnimation()
 		end
 	end)
+	yOffset = yOffset + 28
 end
 
-dropdownFrame.Size = UDim2.new(0, 130, 0, #animations * 29 + 4)
+local normalHeader = Instance.new("TextLabel")
+normalHeader.Size = UDim2.new(1, -8, 0, 18)
+normalHeader.Position = UDim2.new(0, 4, 0, yOffset)
+normalHeader.BackgroundColor3 = Color3.fromRGB(220, 220, 255)
+normalHeader.Text = " Normal"
+normalHeader.TextColor3 = Color3.fromRGB(80, 80, 120)
+normalHeader.Font = Enum.Font.GothamBold
+normalHeader.TextSize = 10
+normalHeader.TextXAlignment = Enum.TextXAlignment.Left
+normalHeader.ZIndex = 11
+normalHeader.Parent = dropdownFrame
+Instance.new("UICorner", normalHeader).CornerRadius = UDim.new(0, 3)
+yOffset = yOffset + 22
+
+for i, animData in ipairs(normalAnims) do
+	local item = Instance.new("TextButton")
+	item.Size = UDim2.new(1, -8, 0, 24)
+	item.Position = UDim2.new(0, 4, 0, yOffset)
+	item.Text = animData.name
+	item.BackgroundColor3 = Color3.fromRGB(245, 245, 255)
+	item.TextColor3 = Color3.fromRGB(80, 80, 80)
+	item.Font = Enum.Font.GothamBold
+	item.TextSize = 11
+	item.ZIndex = 11
+	item.Parent = dropdownFrame
+	Instance.new("UICorner", item).CornerRadius = UDim.new(0, 4)
+
+	item.MouseEnter:Connect(function()
+		item.BackgroundColor3 = Color3.fromRGB(220, 210, 255)
+	end)
+	item.MouseLeave:Connect(function()
+		item.BackgroundColor3 = Color3.fromRGB(245, 245, 255)
+	end)
+	item.MouseButton1Click:Connect(function()
+		currentIndex = i
+		selectedLabel.Text = animData.name
+		dropdownOpen = false
+		dropdownFrame.Visible = false
+		dropdownBtn.Text = "v"
+		if isPlaying then
+			stopAnimation()
+			playAnimation()
+		end
+	end)
+	yOffset = yOffset + 28
+end
+
+dropdownFrame.Size = UDim2.new(0, 150, 0, yOffset + 2)
 
 dropdownBtn.MouseButton1Click:Connect(function()
 	dropdownOpen = not dropdownOpen
@@ -233,24 +322,48 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 end)
 
 local function stopAnimation()
+	if stopTimer then
+		task.cancel(stopTimer)
+		stopTimer = nil
+	end
 	if currentTrack then
 		currentTrack:Stop()
 	end
 	isPlaying = false
 	currentTrack = nil
-	playBtn.Text = "Play Animation"
+	playBtn.Text = "Play"
 	playBtn.BackgroundColor3 = Color3.fromRGB(170, 140, 255)
 end
 
 local function playAnimation()
+	if isPlaying then return end
 	local track = animTracks[currentIndex]
 	if not track then return end
+	
+	local animData = allAnims[currentIndex]
+	
+	-- MODIFIED: Handle no-loop animations
+	if animData.noLoop then
+		track.Looped = false
+	else
+		track.Looped = true
+	end
+	
 	track:Play()
 	track:AdjustSpeed(1)
 	currentTrack = track
 	isPlaying = true
-	playBtn.Text = "Stop Animation"
+	playBtn.Text = "Stop"
 	playBtn.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+
+	-- MODIFIED: Force stop after duration for legit animations
+	if animData and animData.duration then
+		stopTimer = task.delay(animData.duration, function()
+			if currentTrack == track and isPlaying then
+				stopAnimation()
+			end
+		end)
+	end
 end
 
 playBtn.MouseButton1Click:Connect(function()
@@ -278,7 +391,7 @@ local function setupAnimations(character)
 
 	animTracks = {}
 
-	for i, animData in ipairs(animations) do
+	for i, animData in ipairs(allAnims) do
 		local anim = Instance.new("Animation")
 		anim.AnimationId = animData.id
 
@@ -336,4 +449,320 @@ UserInputService.InputChanged:Connect(function(input)
 			startPos.Y.Offset + delta.Y
 		)
 	end
+end)
+
+local draggingMin = false
+local dragMinStart, startMinPos
+
+minimizedBar.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		draggingMin = true
+		dragMinStart = input.Position
+		startMinPos = minimizedBar.Position
+	end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		draggingMin = false
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if draggingMin and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		local delta = input.Position - dragMinStart
+		minimizedBar.Position = UDim2.new(
+			startMinPos.X.Scale,
+			startMinPos.X.Offset + delta.X,
+			startMinPos.Y.Scale,
+			startMinPos.Y.Offset + delta.Y
+		)
+	end
+end)
+
+local detectionRadius = 15
+local radiusEnabled = false
+local cooldown = false
+local indicator = nil
+
+local function hasLineOfSight(targetHRP, myHRP, myChar)
+	local rayParams = RaycastParams.new()
+	local filterList = {}
+	for _, part in ipairs(myChar:GetDescendants()) do
+		if part:IsA("BasePart") then
+			table.insert(filterList, part)
+		end
+	end
+	rayParams.FilterDescendantsInstances = filterList
+	rayParams.FilterType = Enum.RaycastFilterType.Blacklist
+
+	local direction = targetHRP.Position - myHRP.Position
+	local result = Workspace:Raycast(myHRP.Position, direction, rayParams)
+
+	if not result then return true end
+	return result.Instance:IsDescendantOf(targetHRP.Parent)
+end
+
+local function isEnemy(targetPlayer)
+	local myTeam = player.Team
+	local theirTeam = targetPlayer.Team
+	if not myTeam or not theirTeam then return true end
+	return myTeam ~= theirTeam
+end
+
+local function getNearbyEnemy(myChar)
+	local myHRP = myChar:FindFirstChild("HumanoidRootPart")
+	if not myHRP then return nil end
+
+	for _, p in ipairs(Players:GetPlayers()) do
+		if p ~= player and p.Character then
+			local targetHRP = p.Character:FindFirstChild("HumanoidRootPart")
+			if targetHRP then
+				local dist = (targetHRP.Position - myHRP.Position).Magnitude
+				if dist <= detectionRadius then
+					if not isEnemy(p) then continue end
+					if hasLineOfSight(targetHRP, myHRP, myChar) then
+						return p
+					end
+				end
+			end
+		end
+	end
+	return nil
+end
+
+local function createIndicator()
+	if indicator then indicator:Destroy() end
+	indicator = Instance.new("Part")
+	indicator.Shape = Enum.PartType.Cylinder
+	indicator.Size = Vector3.new(0.1, detectionRadius * 2, detectionRadius * 2)
+	indicator.Orientation = Vector3.new(0, 0, 90)
+	indicator.Anchored = true
+	indicator.CanCollide = false
+	indicator.Transparency = 0.8
+	indicator.Color = Color3.fromRGB(255, 0, 0)
+	indicator.Material = Enum.Material.Neon
+	indicator.Parent = Workspace
+end
+
+local function destroyIndicator()
+	if indicator then
+		indicator:Destroy()
+		indicator = nil
+	end
+end
+
+local function updateIndicatorSize()
+	if indicator then
+		indicator.Size = Vector3.new(0.1, detectionRadius * 2, detectionRadius * 2)
+	end
+end
+
+local settingsOpen = false
+local settingsFrame = Instance.new("Frame")
+settingsFrame.Name = "Settings"
+settingsFrame.Size = UDim2.new(0, 160, 0, 125)  -- MODIFIED: Increased height for new toggle
+settingsFrame.Position = UDim2.new(1, -168, 0, 26)
+settingsFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+settingsFrame.BorderSizePixel = 0
+settingsFrame.Visible = false
+settingsFrame.ZIndex = 15
+settingsFrame.Parent = content
+Instance.new("UICorner", settingsFrame).CornerRadius = UDim.new(0, 6)
+
+local settingsStroke = Instance.new("UIStroke", settingsFrame)
+settingsStroke.Color = Color3.fromRGB(170, 140, 255)
+settingsStroke.Thickness = 1.5
+
+local radiusToggle = Instance.new("TextButton")
+radiusToggle.Size = UDim2.new(1, -12, 0, 24)
+radiusToggle.Position = UDim2.new(0, 6, 0, 6)
+radiusToggle.Text = "Radius: OFF"
+radiusToggle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+radiusToggle.TextColor3 = Color3.new(1, 1, 1)
+radiusToggle.Font = Enum.Font.GothamBold
+radiusToggle.TextSize = 11
+radiusToggle.ZIndex = 16
+radiusToggle.Parent = settingsFrame
+Instance.new("UICorner", radiusToggle).CornerRadius = UDim.new(0, 4)
+
+-- NEW: Even more Legit toggle
+local moreLegitToggle = Instance.new("TextButton")
+moreLegitToggle.Size = UDim2.new(1, -12, 0, 24)
+moreLegitToggle.Position = UDim2.new(0, 6, 0, 36)
+moreLegitToggle.Text = "Even more Legit: OFF"
+moreLegitToggle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+moreLegitToggle.TextColor3 = Color3.new(1, 1, 1)
+moreLegitToggle.Font = Enum.Font.GothamBold
+moreLegitToggle.TextSize = 10
+moreLegitToggle.ZIndex = 16
+moreLegitToggle.Parent = settingsFrame
+Instance.new("UICorner", moreLegitToggle).CornerRadius = UDim.new(0, 4)
+
+moreLegitToggle.MouseButton1Click:Connect(function()
+	evenMoreLegit = not evenMoreLegit
+	if evenMoreLegit then
+		moreLegitToggle.Text = "Even more Legit: ON"
+		moreLegitToggle.BackgroundColor3 = Color3.fromRGB(100, 180, 100)
+	else
+		moreLegitToggle.Text = "Even more Legit: OFF"
+		moreLegitToggle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+	end
+end)
+
+local sliderLabel = Instance.new("TextLabel")
+sliderLabel.Size = UDim2.new(1, -12, 0, 14)
+sliderLabel.Position = UDim2.new(0, 6, 0, 64)
+sliderLabel.BackgroundTransparency = 1
+sliderLabel.Text = "Range: " .. detectionRadius .. " studs"
+sliderLabel.TextColor3 = Color3.fromRGB(80, 80, 80)
+sliderLabel.Font = Enum.Font.GothamBold
+sliderLabel.TextSize = 10
+sliderLabel.ZIndex = 16
+sliderLabel.Parent = settingsFrame
+
+local sliderFrame = Instance.new("TextButton")
+sliderFrame.Size = UDim2.new(1, -12, 0, 12)
+sliderFrame.Position = UDim2.new(0, 6, 0, 80)
+sliderFrame.BackgroundColor3 = Color3.fromRGB(220, 220, 255)
+sliderFrame.Text = ""
+sliderFrame.AutoButtonColor = false
+sliderFrame.ZIndex = 16
+sliderFrame.Parent = settingsFrame
+Instance.new("UICorner", sliderFrame).CornerRadius = UDim.new(0, 6)
+
+local sliderFill = Instance.new("Frame")
+sliderFill.Size = UDim2.new(1, 0, 1, 0)
+sliderFill.BackgroundColor3 = Color3.fromRGB(170, 140, 255)
+sliderFill.BorderSizePixel = 0
+sliderFill.ZIndex = 17
+sliderFill.Parent = sliderFrame
+Instance.new("UICorner", sliderFill).CornerRadius = UDim.new(0, 6)
+
+local sliderKnob = Instance.new("Frame")
+sliderKnob.Size = UDim2.new(0, 10, 0, 10)
+sliderKnob.Position = UDim2.new(1, -5, 0.5, -5)
+sliderKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+sliderKnob.BorderSizePixel = 0
+sliderKnob.ZIndex = 18
+sliderKnob.Parent = sliderFill
+Instance.new("UICorner", sliderKnob).CornerRadius = UDim.new(1, 0)
+
+local function setRadius(val)
+	detectionRadius = math.clamp(math.floor(val + 0.5), 1, 15)
+	sliderLabel.Text = "Range: " .. detectionRadius .. " studs"
+	local pct = (detectionRadius - 1) / 14
+	sliderFill.Size = UDim2.new(pct, 0, 1, 0)
+	updateIndicatorSize()
+end
+
+local draggingRadius = false
+
+sliderFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		draggingRadius = true
+		local absPos = sliderFrame.AbsolutePosition.X
+		local absSize = sliderFrame.AbsoluteSize.X
+		local pct = math.clamp((input.Position.X - absPos) / absSize, 0, 1)
+		setRadius(1 + pct * 14)
+	end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		draggingRadius = false
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if draggingRadius and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		local absPos = sliderFrame.AbsolutePosition.X
+		local absSize = sliderFrame.AbsoluteSize.X
+		local pct = math.clamp((input.Position.X - absPos) / absSize, 0, 1)
+		setRadius(1 + pct * 14)
+	end
+end)
+
+radiusToggle.MouseButton1Click:Connect(function()
+	radiusEnabled = not radiusEnabled
+	if radiusEnabled then
+		radiusToggle.Text = "Radius: ON"
+		radiusToggle.BackgroundColor3 = Color3.fromRGB(100, 180, 100)
+		createIndicator()
+	else
+		radiusToggle.Text = "Radius: OFF"
+		radiusToggle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+		destroyIndicator()
+		cooldown = false
+	end
+end)
+
+settingsBtn.MouseButton1Click:Connect(function()
+	settingsOpen = not settingsOpen
+	settingsFrame.Visible = settingsOpen
+end)
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed then return end
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		if settingsOpen then
+			local pos = input.Position
+			local sPos = settingsFrame.AbsolutePosition
+			local sSize = settingsFrame.AbsoluteSize
+			local bPos = settingsBtn.AbsolutePosition
+			local bSize = settingsBtn.AbsoluteSize
+			local outsideSettings = pos.X < sPos.X or pos.X > sPos.X + sSize.X or pos.Y < sPos.Y or pos.Y > sPos.Y + sSize.Y
+			local outsideButton = pos.X < bPos.X or pos.X > bPos.X + bSize.X or pos.Y < bPos.Y or pos.Y > bPos.Y + bSize.Y
+			if outsideSettings and outsideButton then
+				settingsOpen = false
+				settingsFrame.Visible = false
+			end
+		end
+	end
+end)
+
+RunService.Heartbeat:Connect(function()
+	if not radiusEnabled then return end
+	if cooldown then return end
+
+	local char = player.Character
+	if not char then return end
+
+	local hrp = char:FindFirstChild("HumanoidRootPart")
+	local humanoid = char:FindFirstChild("Humanoid")
+	
+	if hrp and indicator then
+		indicator.Position = hrp.Position - Vector3.new(0, 2.5, 0)
+	end
+
+	-- MODIFIED: Check for "Even more Legit" feature
+	if evenMoreLegit and humanoid and isPlaying then
+		local rootPart = humanoid.RootPart or hrp
+		if rootPart then
+			local currentVelocity = rootPart.AssemblyLinearVelocity.Magnitude
+			if currentVelocity > 0.5 then  -- Threshold untuk mendeteksi pergerakan
+				stopAnimation()
+				cooldown = true
+				task.delay(0.5, function()
+					cooldown = false
+				end)
+				return
+			end
+		end
+	end
+
+	local nearby = getNearbyEnemy(char)
+	if nearby then
+		cooldown = true
+		if not isPlaying then
+			playAnimation()
+		end
+		task.wait(1)
+		cooldown = false
+	end
+end)
+
+player.CharacterRemoving:Connect(function()
+	destroyIndicator()
+	cooldown = false
 end)
