@@ -1,0 +1,253 @@
+-- ==========================================
+-- УНИВЕРСАЛЬНЫЙ EVADE ХАБ С ЖЕСТКИМ FOV И АВТОФАРМОМ
+-- ==========================================
+
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local ValueLabel = Instance.new("TextLabel")
+local BtnPlus = Instance.new("TextButton")
+local BtnMinus = Instance.new("TextButton")
+local BtnFarm = Instance.new("TextButton")
+local BtnMinimize = Instance.new("TextButton")
+
+-- Защита интерфейса от удаления при спавне
+ScreenGui.Name = "Evade_Ultimate_Hub_v3"
+ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.ResetOnSpawn = false
+
+-- Главная панель меню
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.Position = UDim2.new(0.85, 0, 0.35, 0)
+MainFrame.Size = UDim2.new(0, 170, 0, 160)
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+-- Заголовок панели
+Title.Name = "Title"
+Title.Parent = MainFrame
+Title.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+Title.Size = UDim2.new(1, 0, 0, 25)
+Title.Font = Enum.Font.SourceSansBold
+Title.Text = "  Evade Hub v3"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 14
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Текст текущего значения FOV
+ValueLabel.Name = "ValueLabel"
+ValueLabel.Parent = MainFrame
+ValueLabel.BackgroundTransparency = 1
+ValueLabel.Position = UDim2.new(0, 0, 0, 30)
+ValueLabel.Size = UDim2.new(1, 0, 0, 25)
+ValueLabel.Font = Enum.Font.SourceSansBold
+ValueLabel.Text = "120"
+ValueLabel.TextColor3 = Color3.fromRGB(0, 255, 150)
+ValueLabel.TextSize = 22
+
+-- ==========================================
+-- ИСПРАВЛЕННАЯ СИСТЕМА ФИКСАЦИИ FOV
+-- ==========================================
+local fovConnection = nil
+local currentFovValue = 120
+
+local function applyAndSaveFOV(fovValue)
+    currentFovValue = fovValue
+    ValueLabel.Text = tostring(fovValue)
+    
+    -- Сбрасываем старую фиксацию кадра
+    if fovConnection then fovConnection:Disconnect() end
+    
+    -- Блокируем камеру Evade: жестко применяем FOV каждый кадр рендеринга
+    fovConnection = game:GetService("RunService").RenderStepped:Connect(function()
+        local camera = workspace.CurrentCamera
+        if camera then
+            camera.FieldOfView = currentFovValue
+        end
+    end)
+    
+    -- Сохраняем в глобальный файл аккаунта Roblox (вечный сейв)
+    local userSettings = UserSettings():GetService("UserGameSettings")
+    pcall(function() userSettings.FieldOfView = fovValue end)
+    
+    -- Визуальный хак ползунка в меню Esc
+    pcall(function()
+        local robloxGui = game:GetService("CoreGui"):WaitForChild("RobloxGui", 2)
+        if robloxGui then
+            for _, v in pairs(robloxGui:GetDescendants()) do
+                if v:IsA("TextLabel") and (string.find(v.Text, "%d") and (string.find(v.Name:lower(), "fov") or v.Parent.Name == "SliderPostFix")) then
+                    v.Text = tostring(fovValue)
+                end
+            end
+        end
+    end)
+    
+    -- Форсируем синхронизацию облачного конфига с сервером
+    pcall(function()
+        local guiService = game:GetService("GuiService")
+        guiService:SetMenuOpened(true)
+        task.wait(0.05)
+        guiService:SetMenuOpened(false)
+    end)
+end
+
+-- Кнопка ПЛЮС (+)
+BtnPlus.Size = UDim2.new(0, 50, 0, 25)
+BtnPlus.Position = UDim2.new(0.55, 0, 0.38, 0)
+BtnPlus.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+BtnPlus.Font = Enum.Font.SourceSansBold
+BtnPlus.Text = "+"
+BtnPlus.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnPlus.TextSize = 18
+BtnPlus.Parent = MainFrame
+BtnPlus.MouseButton1Click:Connect(function()
+    local currentFov = tonumber(ValueLabel.Text)
+    if currentFov < 120 then applyAndSaveFOV(currentFov + 5) end
+end)
+
+-- Кнопка МИНУС (-)
+BtnMinus.Size = UDim2.new(0, 50, 0, 25)
+BtnMinus.Position = UDim2.new(0.12, 0, 0.38, 0)
+BtnMinus.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+BtnMinus.Font = Enum.Font.SourceSansBold
+BtnMinus.Text = "-"
+BtnMinus.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnMinus.TextSize = 18
+BtnMinus.Parent = MainFrame
+BtnMinus.MouseButton1Click:Connect(function()
+    local currentFov = tonumber(ValueLabel.Text)
+    if currentFov > 90 then applyAndSaveFOV(currentFov - 5) end
+end)
+
+
+-- ==========================================
+-- НАДЕЖНЫЙ АВТОФАРМ С СЕРЫМИ ТЕКСТУРАМИ
+-- ==========================================
+local farmActive = false
+local targetHeight = 4500
+local platformPos = Vector3.new(0, targetHeight, 0)
+local currentPlatform = nil
+local player = game:GetService("Players").LocalPlayer
+local charAddedConnection = nil
+
+local function resetPhysicsAndTeleport()
+    if not farmActive then return end
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:WaitForChild("HumanoidRootPart", 5)
+    if hrp then
+        hrp.Velocity = Vector3.new(0, 0, 0)
+        hrp.RotVelocity = Vector3.new(0, 0, 0)
+        hrp.CFrame = CFrame.new(platformPos + Vector3.new(0, 3, 0))
+    end
+end
+
+-- Постоянное сканирование позиции (Anti-Fall защита от сбивания ботами)
+task.spawn(function()
+    while task.wait(0.3) do
+        if farmActive then
+            local char = player.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                local hrp = char.HumanoidRootPart
+                local horizontalDistance = (Vector2.new(hrp.Position.X, hrp.Position.Z) - Vector2.new(platformPos.X, platformPos.Z)).Magnitude
+                if hrp.Position.Y < (platformPos.Y - 4) or horizontalDistance > 2 then
+                    resetPhysicsAndTeleport()
+                end
+            end
+        end
+    end
+end)
+
+-- Имитация прыжка раз в 2 минуты против серверного AFK-кика
+task.spawn(function()
+    while task.wait(120) do
+        if farmActive then
+            local char = player.Character
+            if char and char:FindFirstChild("Humanoid") then
+                if char.Humanoid.Health > 0 then char.Humanoid.Jump = true end
+            end
+        end
+    end
+end)
+
+-- Кнопка включения / выключения АВТОФАРМА
+BtnFarm.Name = "BtnFarm"
+BtnFarm.Parent = MainFrame
+BtnFarm.BackgroundColor3 = Color3.fromRGB(150, 40, 40) -- Изначально выключен (красная)
+BtnFarm.Position = UDim2.new(0.08, 0, 0.65, 0)
+BtnFarm.Size = UDim2.new(0, 142, 0, 40)
+BtnFarm.Font = Enum.Font.SourceSansBold
+BtnFarm.Text = "AUTO FARM: OFF"
+BtnFarm.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnFarm.TextSize = 16
+
+BtnFarm.MouseButton1Click:Connect(function()
+    farmActive = not farmActive
+    if farmActive then
+        BtnFarm.Text = "AUTO FARM: ON"
+        BtnFarm.BackgroundColor3 = Color3.fromRGB(40, 150, 40) -- Включен (зеленая)
+        
+        -- Строим серую легитную платформу под ногами
+        currentPlatform = Instance.new("Part")
+        currentPlatform.Size = Vector3.new(3, 1, 3)
+        currentPlatform.Position = platformPos
+        currentPlatform.Transparency = 1 -- Ставим 1 для полной невидимости
+        currentPlatform.Anchored = true
+        currentPlatform.CanCollide = true
+        currentPlatform.Name = "RenderBuffer"
+        currentPlatform.Parent = game.Workspace
+        
+        resetPhysicsAndTeleport()
+        
+        -- Авто-ТП при старте каждого нового раунда
+        charAddedConnection = player.CharacterAdded:Connect(function()
+            task.wait(0.5)
+            resetPhysicsAndTeleport()
+        end)
+    else
+        BtnFarm.Text = "AUTO FARM: OFF"
+        BtnFarm.BackgroundColor3 = Color3.fromRGB(150, 40, 40)
+        
+        if currentPlatform then currentPlatform:Destroy() currentPlatform = nil end
+        if charAddedConnection then charAddedConnection:Disconnect() charAddedConnection = nil end
+    end
+end)
+
+-- ==========================================
+-- КНОПКА СВЕРНУТЬ ПАНЕЛЬ ( _ )
+-- ==========================================
+local minimized = false
+BtnMinimize.Name = "BtnMinimize"
+BtnMinimize.Parent = MainFrame
+BtnMinimize.BackgroundColor3 = Color3.fromRGB(60, 30, 30)
+BtnMinimize.Position = UDim2.new(0.8, 0, 0, 0)
+BtnMinimize.Size = UDim2.new(0, 34, 0, 25)
+BtnMinimize.Font = Enum.Font.SourceSansBold
+BtnMinimize.Text = "_"
+BtnMinimize.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnMinimize.TextSize = 14
+
+BtnMinimize.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    if minimized then
+        MainFrame:TweenSize(UDim2.new(0, 170, 0, 25), "Out", "Quad", 0.2, true)
+        ValueLabel.Visible = false BtnPlus.Visible = false BtnMinus.Visible = false BtnFarm.Visible = false
+        BtnMinimize.Text = "O"
+    else
+        MainFrame:TweenSize(UDim2.new(0, 170, 0, 160), "Out", "Quad", 0.2, true)
+        task.wait(0.1)
+        ValueLabel.Visible = true BtnPlus.Visible = true BtnMinus.Visible = true BtnFarm.Visible = true
+        BtnMinimize.Text = "_"
+    end
+end)
+
+-- Считываем и принудительно закрепляем FOV при старте хаба
+pcall(function()
+    local currentOnStart = workspace.CurrentCamera.FieldOfView
+    if currentOnStart >= 90 and currentOnStart <= 120 then 
+        applyAndSaveFOV(math.floor(currentOnStart)) 
+    else 
+        applyAndSaveFOV(120) 
+    end
+end)
